@@ -23,6 +23,10 @@ const questios=new mongoose.Schema({
     questionType:{
         type:String,
         default:"MCQ"
+    },
+    subjectCode:{
+        type:mongoose.Schema.Types.ObjectId,
+        ref:"subject"
     }
 
 })
