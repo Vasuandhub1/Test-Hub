@@ -1,0 +1,6 @@
+# ignore the node_modules
+/node_modules
+# ignore dotenv
+.env
+#  ingnore package-log.json
+package-lock.json
