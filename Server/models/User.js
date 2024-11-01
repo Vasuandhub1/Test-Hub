@@ -8,7 +8,12 @@ const User= new mongoose.Schema({
     },
     role:{
         type:String,
-        required:true
+    },
+    otp:{
+        type:Number
+    },
+    isVerifid:{
+        type:Boolean
     }    
 
 })
