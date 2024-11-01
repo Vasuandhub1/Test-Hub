@@ -5,6 +5,10 @@ const Faculty=new mongoose.Schema({
         type:String,
         required:true
     },
+    userID:{
+        type:mongoose.Schema.Types.ObjectId,
+        ref:"user"
+    },
     Branch:{
         type:String,
         required:true
@@ -21,6 +25,7 @@ const Faculty=new mongoose.Schema({
         type:true,
         required:true
     },
+
     MCQTest:{
          type:[mongoose.Schema.Types.ObjectId],
         ref:"MCQ"

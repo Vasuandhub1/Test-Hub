@@ -5,6 +5,10 @@ const Admin=new mongoose.Schema({
         type:String,
         requireed:true
     },
+    userID:{
+        type:mongoose.Schema.Types.ObjectId,
+        ref:"user"
+    }
 
 })
 

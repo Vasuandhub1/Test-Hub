@@ -5,6 +5,10 @@ const Student=new mongoose.Schema({
         type:String,
         required:true
     },
+    userID:{
+        type:mongoose.Schema.Types.ObjectId,
+        ref:"user"
+    },
     Enroll:{
         type:String,
         required:true
