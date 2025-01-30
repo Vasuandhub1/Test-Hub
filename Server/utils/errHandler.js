@@ -9,10 +9,10 @@ const handelSucess=(res,message,data)=>{
 }
 const handelErr=(res,message,data,code)=>{
     const messages=message||"sucess"
-    const datas=data||true
+    const datas=data||false
     const codes=code||404
    return res.status(codes).json({
-        sucess:true,
+        sucess:false,
         message:messages,
         data:datas
     })
