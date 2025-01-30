@@ -2,12 +2,17 @@ const express = require("express")
 const app= express()
 const {connectDB}=require("./config/dbConnect")
 require("dotenv").config()
+const cors= require("cors")
 const auth_Route=require("./routes/authRoutes")
-// const { cookie } = require("express-validator")
+
 
 const cookieParser = require("cookie-parser")
 
 connectDB()
+
+// allowing all the origins
+app.use(cors())
+// prasing the json 
 app.use(express.json())
 app.use(cookieParser())
 
