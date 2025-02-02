@@ -5,11 +5,19 @@ import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "@reduxjs/toolkit/query";
 import { toggleDarkMode } from "../../../Redux/slices/DarkLight";
 import axios from "axios";
+import { useToast } from "@/hooks/use-toast"
+import { useNavigate } from "react-router-dom";
+
+
 
 
 
 
 export function RegisterCard() {
+    const navigate=useNavigate()
+    const  emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    // instance for the toast 
+    const {toast}=useToast()
     // getting the dark mode 
     const isDarkMode = useSelector((state:RootState)=>state.DarkLight.isDarkMode)
     // instacce for the dipatch 
@@ -71,11 +79,32 @@ export function RegisterCard() {
 
   const handleSubmit = async() => {
     setSubmitting(true);
+    if(!emailRegex.test(data.email)){
+        toast({
+            title:"hello",
+            description:"please check your email"
+        })
+        return
+    }
     const req={"userEmail":data.email,
         "userPassword":data.password,
-        "role":role
+        "role":role,
+        "url":"http://localhost:5173/verify"
     }
-    const res=await axios.post("http://localhost:3000/test-hub/User",{...req})
+    const res=await axios.post("http://localhost:3000/test-hub/User",{...req}).then(()=>{
+        toast({
+            title:"hello",
+            description:"sucessful login"
+        })
+
+    }).catch((err)=>{
+        console.log(err)
+        toast({
+            title:"hello",
+            description:` Please check your credentials`
+        })
+    })  
+    
     console.log(res)
     setTimeout(() => {
       setSubmitting(false); // Simulate form submission delay

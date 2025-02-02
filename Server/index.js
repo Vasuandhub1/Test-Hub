@@ -13,6 +13,7 @@ connectDB()
 // allowing all the origins
 app.use(cors())
 // prasing the json 
+app.use(express.urlencoded({ extended: true })); 
 app.use(express.json())
 app.use(cookieParser())
 
