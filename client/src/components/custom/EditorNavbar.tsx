@@ -3,7 +3,8 @@ import { useEffect } from 'react';
 import React from 'react'
 import { useSelector } from 'react-redux'
 
-function EditorNavbar() {
+
+function EditorNavbar({languages}) {
     const isDarkMode=useSelector((state:RootState)=>state.DarkLight.isDarkMode)
 
       useEffect(() => {
@@ -20,9 +21,12 @@ function EditorNavbar() {
     <div>
       <nav className=' bg-white text-black dark:bg-inherit dark:text-white dark:from-zinc-900 dark:to-zinc-700'>
         <select name="language" id="java"  className=' bg-white text-black dark:bg-inherit dark:text-white dark:from-zinc-900 dark:to-zinc-700'>
-            <option value="java" className=' bg-white text-black dark:bg-inherit dark:text-white dark:from-zinc-900 dark:to-zinc-700' >Java</option>
-            <option value="c++" className=' bg-white text-black dark:bg-inherit dark:text-white dark:from-zinc-900 dark:to-zinc-700'>C++</option>
-            <option value="javascript" className=' bg-white text-black dark:bg-inherit dark:text-white dark:from-zinc-900 dark:to-zinc-700'>Javascript</option>
+            {languages.map((elem,index)=>{
+                return (
+                    <option key={index} value={elem.name} className=' bg-white text-black dark:bg-slate-900  dark:text-white dark:from-zinc-900 dark:to-zinc-700' >{elem.name}</option> 
+                )
+            })}
+            
         </select>
       </nav>
     </div>
