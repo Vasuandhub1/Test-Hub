@@ -4,7 +4,7 @@ import EditorNavbar from "./EditorNavbar";
 import axios from "axios";
 
 const TextEditor = () => {
-    export interface languageList{
+     interface languageList{
         id:number,
         name:string
     }
