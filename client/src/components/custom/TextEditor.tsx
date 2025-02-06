@@ -4,7 +4,7 @@ import EditorNavbar from "./EditorNavbar";
 import axios from "axios";
 
 const TextEditor = () => {
-    export interface languageList{
+     interface languageList{
         id:number,
         name:string
     }
@@ -28,7 +28,7 @@ console.log(languages)
     <div>
         <nav>
             <EditorNavbar languages={languages}/>
-        </nav>
+        </nav>  
     <MonacoEditor
       height="100rem"
       defaultLanguage="javascript"
