@@ -22,7 +22,7 @@ const Faculty=new mongoose.Schema({
         required:true
     },
     Gender:{
-        type:true,
+        type:String,
         required:true
     },
 
@@ -30,11 +30,11 @@ const Faculty=new mongoose.Schema({
          type:[mongoose.Schema.Types.ObjectId],
         ref:"MCQ"
     },
-    codingTest:{
+    CodingTest:{
          type:[mongoose.Schema.Types.ObjectId],
         ref:"code"
     },
-    facultyEnroll:{
+    FacultyEnroll:{
         type:String,
         required:true
     },

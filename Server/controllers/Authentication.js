@@ -1,10 +1,13 @@
 const User = require("../models/User")
 const {handelErr, handelSucess}=require("../utils/errHandler")
-
 const bcrypt=require("bcrypt")
 const mailServices=require("../utils/mailServices")
 const {createToken, getTokenData}=require("../utils/createToken")
 const { param } = require("../routes/authRoutes")
+const Faculty = require("../models/Faculty")
+const Student = require("../models/Students")
+const Admin = require("../models/Admin")
+const Students = require("../models/Students")
 // controller for User Register
 
 const RegisterUser=async(req,res,next)=>{
@@ -26,8 +29,6 @@ const RegisterUser=async(req,res,next)=>{
             await bcrypt.hash(userPassword,10).then(async(password)=>{
 
                 // generate the token and send it to user 
-               
-
                
                 const newUser=await User.create({userEmail,userPassword:password,role})
 
@@ -106,21 +107,118 @@ const loginUser= async(req,res,next)=>{
         if(userEmail && userPassword){
             // now check if the uer is rejisterres
             const isPresent = await User.findOne({userEmail:userEmail})
-
+          
             if(isPresent){
                 // if the uer is present
                 if(isPresent.isVerifid){
                     // if the user is verified check the password and login 
-                    await bcrypt.compare(userPassword,isPresent.userPassword).then((data)=>{
-                        // now create the token and set to the uer 
+                    const isCorrect=await bcrypt.compare(userPassword,isPresent.userPassword)
+                    console.log(isCorrect,"correct")
+                    if(isCorrect){
+                         // now check if the uer is student faculty or admin
+                         const isStudent = await Students.findOne({userId:isPresent._id})
+                         const isFaculty = await Faculty.findOne({userId:isPresent._id})
+                         const isAdmin = await Admin.findOne({userId:isPresent._id})
                         
-
-                        return next(handelSucess)
-                    }).catch((err)=>{
-                        return next(handelErr(res,err.message,err,404))
-                    })
+                         if(isStudent || isFaculty || isAdmin){
+                             if(isStudent){
+                                 // if student login as student
+                                 const data={email:isPresent.userEmail,
+                                     name:isStudent.Sname,
+                                     Enroll:isStudent.Enroll,
+                                     section:isStudent.Section,
+                                     branch:isStudent.Branch,
+                                     DOB:isStudent.DOB
+                                 }
+                                 const payload={
+                                     _id:isPresent._id,
+                                     email:isPresent.email,
+                                     role:isPresent.role,
+                                     student_id:isStudent._id
+                                 }
+                                 const token = await createToken(payload,"2h")
+                                 // now send the res
+                                 res.cookie("Student",token,{expiresIn:"2h"})
+                                 return next(handelSucess(res,"logined sucessful",data))
+                             }else if(isFaculty){
+                                 // if faculty login as faculty
+                                 const data={email:isPresent.userEmail,
+                                     name:isFaculty.Fname,
+                                     Enroll:isFaculty.FacultyEnroll,
+                                     subject:isFaculty.Subject,
+                                     branch:isFaculty.Branch,
+                                     DOB:isFaculty.DOB
+                                 }
+                                 const payload={
+                                     _id:isPresent._id,
+                                     email:isPresent.email,
+                                     role:isPresent.role,
+                                     faculty_id:isFaculty._id
+                                 }
+                                 const token = await createToken(payload,"2h")
+                                 // now send the res
+                                 res.cookie("Faculty",token,{expiresIn:"24h"})
+                                 return next(handelSucess(res,"logined sucessful",data))
+                             }else{
+                                 // if admin login as admin 
+                                 const data={email:isPresent.userEmail,
+                                     name:isAdmin.AdminName,
+                                 }
+                                 const payload={
+                                     _id:isPresent._id,
+                                     email:isPresent.email,
+                                     role:isPresent.role,
+                                     admin:isAdmin._id
+                                 }
+                                 const token = await createToken(payload,"2h")
+                                 // now send the res
+                                 res.cookie("Admin",token,{expiresIn:"24h"})
+                                 return next(handelSucess(res,"logined sucessful",data))
+                             }
+                         }else{
+                           console.log("in creating")
+                             if(isPresent.role === "Admin"){
+                                 // register Admin
+                                 // now create the token for the Admin creation
+                                 const payload={ email:isPresent.userEmail , _id:isPresent._id,role:isPresent.role}
+                                 const token = await createToken(payload,"2h")
+                                 // now send the cookie and res
+                                 res.cookie("createAdmin",token,{expiresIn:"2h"})
+ 
+                                 // now sedn the data
+                                 return next(handelSucess(res,"Create Admin","AdminCreate"))
+ 
+                             }else if(isPresent.role === "Faculty"){
+                                 // register Faculty
+                                 // now create the token for the Admin creation
+                                 const payload={ email:isPresent.userEmail , _id:isPresent._id, role:isPresent.role}
+                                 const token = await createToken(payload,"2h")
+                                 // now send the cookie and res
+                                 res.cookie("CreateFaculty",token,{expiresIn:"2h"})
+ 
+                                 // now sedn the data
+                                 return next(handelSucess(res,"Create Faculty","FacultyCreate"))
+                             }else{
+                                 // register student
+                                 console.log("in student")
+                                 // now create the token for the Admin creation
+                                 const payload={ email:isPresent.userEmail , _id:isPresent._id, role:isPresent.role}
+                                 const token = await createToken(payload,"2h")
+                                 
+                                 // now send the cookie and res
+                                 res.cookie("CreateStudent",token,{expiresIn:"2h"})
+ 
+                                 // now sedn the data
+                                 return next(handelSucess(res,"Create Student","StudentCreate"))
+ 
+                             }
+                         }
+                    }
+                    else{
+                        return next(handelErr(res,"wrong password","password",404))
+                    }
                 }else{
-
+                    return next(handelErr(res,"please verify the user","err",404))
                 }
             }else{
                 // if the uer is not present 
@@ -130,11 +228,11 @@ const loginUser= async(req,res,next)=>{
             return next(handelErr(res,"please provide all  the credentials","provide all the credentials",404))
         }
     }catch(err){
-        return next(handelErr(res,err.message,err))
+        return next(handelErr(res,err.message,err,404))
     }
 }
 
 
 
 // exporting the controllers
-module.exports={RegisterUser,EmailValidate}
+module.exports={RegisterUser,EmailValidate,loginUser}

@@ -17,23 +17,23 @@ const Student=new mongoose.Schema({
         type:[mongoose.Schema.Types.ObjectId],
         ref:"MCQ"
     },
-    codingTest:{
+    CodingTest:{
         type:[mongoose.Schema.Types.ObjectId],
         ref:"code"
     },
-    year:{
+    Year:{
         type:String,
         required:true
     },
-    section:{
+    Section:{
         type:String,
         required:true
     },
-    branch:{
+    Branch:{
         type:String,
         required:true
     },
-    gender:{
+    Gender:{
         type:String,
         required:true
     },
