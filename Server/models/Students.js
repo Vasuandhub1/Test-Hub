@@ -7,7 +7,7 @@ const Student=new mongoose.Schema({
     },
     userId:{
         type:mongoose.Schema.Types.ObjectId,
-        ref:"user"
+        ref:"User"
     },
     Enroll:{
         type:String,

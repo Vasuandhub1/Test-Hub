@@ -4,6 +4,7 @@ const {connectDB}=require("./config/dbConnect")
 require("dotenv").config()
 const cors= require("cors")
 const auth_Route=require("./routes/authRoutes")
+const StudRoute = require("./routes/studentRoutes")
 
 
 const cookieParser = require("cookie-parser")
@@ -11,13 +12,14 @@ const cookieParser = require("cookie-parser")
 connectDB()
 
 // allowing all the origins
-app.use(cors())
+app.use(cors({credentials:true,origin:true}))
 // prasing the json 
 app.use(express.urlencoded({ extended: true })); 
 app.use(express.json())
 app.use(cookieParser())
 
 app.use("/test-hub/",auth_Route)
+app.use("/student-test-hub/",StudRoute)
 
 app.get("/",(req,res)=>{
     res.send("hello from the server")

@@ -3,9 +3,7 @@ const {handelErr, handelSucess}=require("../utils/errHandler")
 const bcrypt=require("bcrypt")
 const mailServices=require("../utils/mailServices")
 const {createToken, getTokenData}=require("../utils/createToken")
-const { param } = require("../routes/authRoutes")
 const Faculty = require("../models/Faculty")
-const Student = require("../models/Students")
 const Admin = require("../models/Admin")
 const Students = require("../models/Students")
 // controller for User Register
@@ -128,7 +126,8 @@ const loginUser= async(req,res,next)=>{
                                      Enroll:isStudent.Enroll,
                                      section:isStudent.Section,
                                      branch:isStudent.Branch,
-                                     DOB:isStudent.DOB
+                                     DOB:isStudent.DOB,
+                                     role:isPresent.role
                                  }
                                  const payload={
                                      _id:isPresent._id,
@@ -147,7 +146,8 @@ const loginUser= async(req,res,next)=>{
                                      Enroll:isFaculty.FacultyEnroll,
                                      subject:isFaculty.Subject,
                                      branch:isFaculty.Branch,
-                                     DOB:isFaculty.DOB
+                                     DOB:isFaculty.DOB,
+                                     role:isPresent.role
                                  }
                                  const payload={
                                      _id:isPresent._id,
