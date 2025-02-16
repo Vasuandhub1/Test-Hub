@@ -1,9 +1,10 @@
 import React from 'react'
+import StudentNavbar from '@/components/custom/StudentNavbar'
 
 function StudentHome() {
   return (
-    <div className="text-lg text-black">
-      Student Homt
+    <div >
+    Hello from student home
     </div>
   )
 }

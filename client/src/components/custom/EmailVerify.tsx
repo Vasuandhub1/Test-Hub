@@ -51,11 +51,16 @@ const params=useParams()
   };
 
   const handleButton = async()=>{
-    const res= await axios.get(`http://localhost:3000/test-hub/User/${params.token}`)
-    console.log(res)
+   await axios.get(`http://localhost:3000/test-hub/User/${params.token}`).then((res)=>{
+      console.log(res)
     toast({
-        title:"hello"   
+        title:"Email verification Done ",  description :"Now you can login to the account" 
     })
+    navigate("/")
+    }).catch((err)=>{
+      toast({title:"Token do not found", description:err.message})
+    })
+    
   }
 
 

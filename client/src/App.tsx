@@ -7,8 +7,11 @@ import { RootState } from "@reduxjs/toolkit/query"
 import { Toaster } from "@/components/ui/toaster"
 import { EmailVerify } from "./components/custom/EmailVerify"
 import CodingPage from "../page/CodingPage"
-import StudentHome from "../page/StudentHome"
+import StudentHome from "./components/custom/StudentHome"
 import StudentRoute from "./components/custom/StudentRoute"
+import StudentCodeCompiler from "./components/custom/StudentCodeCompiler"
+import StudentNavbar from "./components/custom/StudentNavbar"
+import StudentRegister from "./components/custom/StudentRegister"
 
 
 export default function Home() {
@@ -20,11 +23,19 @@ export default function Home() {
     <BrowserRouter>
     <Routes>
       <Route  path="/" Component={LoginCard}/>
-      <Route  path="/register" Component={RegisterCard}/>``
-      <Route  path="/verify/:token" Component={EmailVerify}/>
-      <Route element={<StudentRoute></StudentRoute>}>
+      <Route  path="/register" Component={RegisterCard}/>
+      <Route  path="/verify/:token" Component={EmailVerify}/> 
+      <Route path="/StudentRegister" Component={StudentRegister}/>
+
+      {/* student private route */} 
+
+      <Route element={<>
+        <StudentNavbar/>
+        <StudentRoute/>
+        </>}>
       <Route path="/StudentHome" Component={StudentHome}/>
-      <Route  path="/test/code" Component={CodingPage}/>
+      <Route  path="/test/code" element={<CodingPage SetDescription={true}/>}/>
+      <Route  path="/CodeCompiler" Component={StudentCodeCompiler}/>
       </Route>
 
     </Routes>

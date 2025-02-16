@@ -48,9 +48,16 @@ export function LoginCard() {
       console.log(res!.data!.data)
       const payload=res!.data!.data
       dispatch(setStudent(payload))
-        toast({ title: "Success", description:`Welcome ${res!.data!.data!.name}`});
+        
         setTimeout(()=>{
-          navigate("/StudentHome")
+          if(res!.data!.data==="StudentCreate"){
+            toast({ title: "Success", description:`Welcome Student (Now you enter your academic and Personal details)`});
+            navigate("/StudentRegister")
+          }else{
+            toast({ title: "Success", description:`Welcome ${res!.data!.data!.name}`});
+            navigate("/StudentHome")
+          }
+         
         },2000)
     } catch (err) {
       if (err instanceof yup.ValidationError) {

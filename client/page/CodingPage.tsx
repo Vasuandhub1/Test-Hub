@@ -14,7 +14,7 @@ import {debounce} from "../utils/utils"
 import axios from 'axios'
 
 //    now handeling the functionb
-function CodingPage() {
+function CodingPage({SetDescription}) {
   const source_code=useSelector((state:RootState)=>state.code.code)
 
   const [language,setLanguage]=useState<number>(45)
@@ -51,9 +51,9 @@ function CodingPage() {
     <div>
         <CodingNavbar onRun={handleRunButton} onSubmit={handleRunButton}/>
       <div className='h-1/2'>
-      <ResizablePanelGroup direction="horizontal">
-      <ResizablePanel><CodingDescription/></ResizablePanel>
-      <ResizableHandle withHandle />
+    {SetDescription?<ResizablePanelGroup direction="horizontal">
+    <ResizablePanel><CodingDescription/></ResizablePanel>
+    <ResizableHandle withHandle />
       <ResizablePanel>
       <ResizablePanelGroup direction='vertical'>
       <ResizablePanel>
@@ -66,7 +66,13 @@ function CodingPage() {
       </ResizablePanel>
       </ResizablePanelGroup> 
       </ResizablePanel>     
-    </ResizablePanelGroup>
+    </ResizablePanelGroup>:<ResizablePanelGroup direction="horizontal">
+    <ResizablePanel><TextEditor setLanguage={setLanguage}/></ResizablePanel>
+    <ResizableHandle withHandle />
+      <ResizablePanel>
+     {output}
+      </ResizablePanel>     
+    </ResizablePanelGroup>}
       </div>
     </div>
   )

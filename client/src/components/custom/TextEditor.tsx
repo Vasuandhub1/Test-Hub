@@ -47,7 +47,7 @@ useEffect(()=>{
             <EditorNavbar languages={languages} setLanguage={setLanguage}/>
         </nav>  
     <MonacoEditor
-      height="100rem"
+      height="400px"
       defaultLanguage="cpp"
       value={code}
       theme={EditorTheme}
