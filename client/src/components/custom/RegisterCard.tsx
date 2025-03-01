@@ -12,7 +12,7 @@ import * as yup from "yup";
 const validationSchema = yup.object().shape({
   email: yup.string().email("Invalid email format").required("Email is required"),
   password: yup.string().min(6, "Password must be at least 6 characters").required("Password is required"),
-  role: yup.string().oneOf(["student", "teacher"], "Invalid role").required("Role is required"),
+  role: yup.string().oneOf(["student", "faculty"], "Invalid role").required("Role is required"),
 });
 
 export function RegisterCard() {
@@ -59,6 +59,8 @@ export function RegisterCard() {
     return `perspective(1000px) rotateX(${deltaY * 10}deg) rotateY(${deltaX * -10}deg)`;
   };
 
+
+
   return (
     <div className="flex justify-center items-center min-h-screen bg-gradient-to-br from-zinc-400 to-zinc-300 dark:from-zinc-900 dark:to-zinc-700">
       <button onClick={() => dispatch(toggleDarkMode())} className="absolute top-4 right-4 p-2 rounded-full bg-blue-500 text-white hover:bg-blue-600">
@@ -75,10 +77,9 @@ export function RegisterCard() {
         <div className="mt-6">
           <input type="email" name="email" onChange={handleChange} value={data.email} placeholder="Email" className="w-full px-4 py-3 mb-3 border rounded-lg dark:bg-black dark:text-white" />
           <input type="password" name="password" onChange={handleChange} value={data.password} placeholder="Password" className="w-full px-4 py-3 mb-3 border rounded-lg dark:bg-black dark:text-white" />
-          <select value={role} onChange={(e) => setRole(e.target.value)} className="w-full px-4 py-3 mb-3 border rounded-lg dark:bg-black dark:text-white">
-            <option value="" disabled>Select Role</option>
+          <select  onChange={(e) => setRole(e.target.value)} className="w-full px-4 py-3 mb-3 border rounded-lg dark:bg-black dark:text-white">
             <option value="student">Student</option>
-            <option value="teacher">Teacher</option>
+            <option value="faculty">Faculty</option>
           </select>
           <motion.button type="button" className="w-full px-4 py-3 rounded-xl bg-blue-600 dark:bg-blue-500 text-white" onClick={handleSubmit} disabled={submitting}>
             {submitting ? "Signing In...🚀" : "Sign In"}

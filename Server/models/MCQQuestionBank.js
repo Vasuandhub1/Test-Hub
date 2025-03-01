@@ -6,7 +6,7 @@ const questios=new mongoose.Schema({
         required:true
     },
     options:{
-        type:[string],
+        type:[String],
         required:true
     },
     correctAns:{

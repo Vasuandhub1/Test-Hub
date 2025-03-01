@@ -26,7 +26,7 @@ const StudentRegister = async(req,res,next)=>{
            
 
             // now create the student 
-            const isStudent = await Student.create({Sname,Enroll,Gender,Year,Section,Branch,DOB,userId:TokenData._id})
+            const isStudent = await Student.create({Sname,Enroll,Gender,Year,Section,Branch,DOB,UserId:TokenData._id})
             const isPresent = await User.findById(TokenData._id)
             // now craete the login token
             const data={email:isPresent.userEmail,

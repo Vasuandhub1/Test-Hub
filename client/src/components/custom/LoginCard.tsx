@@ -8,6 +8,7 @@ import axios from "axios";
 import { useToast } from "@/hooks/use-toast";
 import { useNavigate } from "react-router-dom";
 import { setStudent } from "../../../Redux/slices/Student";
+import { setFaculty } from "../../../Redux/slices/Faculty";
 import * as yup from "yup";
 
 const validationSchema = yup.object().shape({
@@ -21,7 +22,6 @@ export function LoginCard() {
   const { toast } = useToast();
   const isDarkMode = useSelector((state: RootState) => state.DarkLight.isDarkMode);
   const student = useSelector((state:RootState)=>state.student.name)
-  console.log(student)
   const dispatch = useDispatch();
 
   const [hovered, setHovered] = useState(false);
@@ -47,15 +47,24 @@ export function LoginCard() {
       const res = await axios.post("http://localhost:3000/test-hub/User/login", req,{withCredentials:true})
       console.log(res!.data!.data)
       const payload=res!.data!.data
-      dispatch(setStudent(payload))
+  
+      
         
         setTimeout(()=>{
           if(res!.data!.data==="StudentCreate"){
             toast({ title: "Success", description:`Welcome Student (Now you enter your academic and Personal details)`});
             navigate("/StudentRegister")
-          }else{
+          }else if(res?.data?.data?.role ==="student"){
+            dispatch(setStudent(payload))
             toast({ title: "Success", description:`Welcome ${res!.data!.data!.name}`});
             navigate("/StudentHome")
+          }else if(res!.data!.data==="FacultyCreate"){
+            toast({ title: "Success", description:`Welcome Faculty (Now you enter your Personal details)`});
+            navigate("/FacultyRegister")
+          }else{
+            dispatch(setFaculty(payload))
+            toast({ title: "Success", description:`Welcome ${res!.data!.data!.name}`});
+            navigate("/FacultyHome")
           }
          
         },2000)

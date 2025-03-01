@@ -15,12 +15,9 @@ const Subject=new mongoose.Schema({
     },
     QuestionBankCode:{
         type:[mongoose.Schema.Types.ObjectId],
-        ref:"code"
+        ref:"Code"
     },
-    facultyId:{
-        type:[mongoose.Schema.Types.ObjectId],
-        ref:"Faculty"
-    }
+    
 })
 
 module.exports=mongoose.model("subject",Subject)

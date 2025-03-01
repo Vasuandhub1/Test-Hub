@@ -5,6 +5,7 @@ require("dotenv").config()
 const cors= require("cors")
 const auth_Route=require("./routes/authRoutes")
 const StudRoute = require("./routes/studentRoutes")
+const FacultyRoute  = require("./routes/FacultyRoutes")
 
 
 const cookieParser = require("cookie-parser")
@@ -20,6 +21,7 @@ app.use(cookieParser())
 
 app.use("/test-hub/",auth_Route)
 app.use("/student-test-hub/",StudRoute)
+app.use("/Faculty-test-hub/",FacultyRoute)
 
 app.get("/",(req,res)=>{
     res.send("hello from the server")

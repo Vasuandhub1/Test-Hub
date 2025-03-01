@@ -4,37 +4,15 @@ import { motion } from "framer-motion";
 import { useSelector } from "react-redux";
 import { RootState } from "@reduxjs/toolkit/query";
 import { Button } from "../ui/button";
-import axios from "axios";
-import { toast, useToast } from "@/hooks/use-toast";
-import { setStudent } from "../../../Redux/slices/Student";
-import { useDispatch } from "react-redux";
 
 
 
-export default function StudentNavbar() {
+export default function FacultyNavbar() {
     const [activeTab, setActiveTab] = useState("Home");
     const navRef = useRef(null);
     const selectorRef = useRef(null);
-    const name = useSelector((state:RootState)=>state.student.name)
-   
-    const {toast} = useToast()
-    const dispatch = useDispatch()
+    const name = useSelector((state:RootState)=>state.faculty.name)
 
-    const handleLogout = async()=>{
-      
-      
-      toast({title:"sucessfully logout", description:"thanks"})
-      const payload={DOB:Date.now(),
-        Enroll:0,
-        branch:"",
-        email:"",
-        name:"",
-        role:"",
-        section:""}
-      dispatch(setStudent(payload))
-    }
-      
-  
   
     useEffect(() => {
       if (navRef.current && selectorRef.current && activeTab) {
@@ -57,12 +35,12 @@ export default function StudentNavbar() {
               className="absolute bottom-0 h-1 derk:bg-white bg-zinc-500 rounded transition-all duration-300"
             />
             {[
-              { name: "Home", path: "/StudentHome" },
+              { name: "Home", path: "/FacultyHome" },
               { name: "Dashboard", path: "/dashboard" },
-              { name: "Tests", path: "/Tests" },
-              { name: "Results", path: "/Results" },
+              { name: "Tests", path: "/FacultyTest" },
+              { name: "Create Questions", path: "/CreateQuestion" },
               { name: "Profile", path: "/Profile" },
-              { name: "Code Compiler", path: "/CodeCompiler"},
+              { name: "Code Compiler", path: "/FacultyCodeCompiler"},
             ].map((item) => (
               <li key={item.name}>
                 <NavLink
@@ -77,11 +55,12 @@ export default function StudentNavbar() {
               </li>
             ))}
           </ul>
-         
+          
+          
         </div>
         <div className="text-black dark:text-white flex  justify-evenly gap-3 items-center text-lg font-bold">
             <div>{name}</div>
-            <Button className="bg-red-700 text-white hover:bg-white hover:text-black dark:hover:text-white dark:hover:bg-black" onClick={handleLogout}>logout</Button>
+            <Button className="bg-red-700 text-white hover:bg-white hover:text-black dark:hover:text-white dark:hover:bg-black">logout</Button>
           </div>
       </nav>
   );

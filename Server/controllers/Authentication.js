@@ -105,6 +105,7 @@ const loginUser= async(req,res,next)=>{
         if(userEmail && userPassword){
             // now check if the uer is rejisterres
             const isPresent = await User.findOne({userEmail:userEmail})
+            console.log(isPresent)
           
             if(isPresent){
                 // if the uer is present
@@ -114,8 +115,8 @@ const loginUser= async(req,res,next)=>{
                     console.log(isCorrect,"correct")
                     if(isCorrect){
                          // now check if the uer is student faculty or admin
-                         const isStudent = await Students.findOne({userId:isPresent._id})
-                         const isFaculty = await Faculty.findOne({userId:isPresent._id})
+                         const isStudent = await Students.findOne({UserId:isPresent._id})
+                         const isFaculty = await Faculty.findOne({UserId:isPresent._id})
                          const isAdmin = await Admin.findOne({userId:isPresent._id})
                         
                          if(isStudent || isFaculty || isAdmin){
@@ -188,7 +189,7 @@ const loginUser= async(req,res,next)=>{
                                  // now sedn the data
                                  return next(handelSucess(res,"Create Admin","AdminCreate"))
  
-                             }else if(isPresent.role === "Faculty"){
+                             }else if(isPresent.role === "faculty"){
                                  // register Faculty
                                  // now create the token for the Admin creation
                                  const payload={ email:isPresent.userEmail , _id:isPresent._id, role:isPresent.role}
@@ -231,6 +232,8 @@ const loginUser= async(req,res,next)=>{
         return next(handelErr(res,err.message,err,404))
     }
 }
+
+
 
 
 

@@ -5,7 +5,7 @@ const Student=new mongoose.Schema({
         type:String,
         required:true
     },
-    userId:{
+    UserId:{
         type:mongoose.Schema.Types.ObjectId,
         ref:"User"
     },

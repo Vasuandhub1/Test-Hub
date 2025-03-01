@@ -19,5 +19,19 @@ const IsCreateStudent = async(req,res,next)=>{
         return next(handelErr(res,err.message,err,404))
     }
 }
+const IsCreatedFaculty = async(req,res,next)=>{
+    try{
+        // now handel the adtaa 
+        const {CreateFaculty} = req.cookies
+        const data = await getTokenData(CreateFaculty)
+        if(data===null){
+            return next(handelErr(res,"create Faculty cookie exprireed","cookie err",404))
+        }else{
+            return next()
+        }
+    }catch(err){
+        return next(handelErr(res,err.message.err,404))
+    }
+}
 
-module.exports = {IsCreateStudent}
+module.exports = {IsCreateStudent,IsCreatedFaculty}

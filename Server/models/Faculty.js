@@ -5,9 +5,9 @@ const Faculty=new mongoose.Schema({
         type:String,
         required:true
     },
-    userID:{
+    UserId:{
         type:mongoose.Schema.Types.ObjectId,
-        ref:"user"
+        ref:"User"
     },
     Branch:{
         type:String,
@@ -17,7 +17,7 @@ const Faculty=new mongoose.Schema({
         type:[mongoose.Schema.Types.ObjectId],
         ref:"Subject"
     },
-    joininYear:{
+    JoiningYear:{
         type:Date,
         required:true
     },

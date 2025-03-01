@@ -7,5 +7,6 @@ route.post("/User",RegisterUser)
 route.get("/User/:token",EmailValidate)
 route.post("/User/login",loginUser)
 
+
 // exporting the routes
 module.exports=route
