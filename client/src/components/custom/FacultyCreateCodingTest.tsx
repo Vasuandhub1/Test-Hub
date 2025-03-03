@@ -19,6 +19,14 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
+
 import axios from 'axios'
 import { Textarea } from '../ui/textarea'
 import { DatePicker } from '../ui/datePicker'
@@ -44,6 +52,9 @@ function FacultyCreateCodingTest() {
     TestName:string,
     TestDescription:string,
     AttemptDate:number,
+    
+    Branch:string,
+    Year:string
    
   }
   const [Questions,Setquestions] = useState<Ques[]>([])
@@ -53,7 +64,10 @@ function FacultyCreateCodingTest() {
   const [Enddate, setEndDate] = React.useState<Date>()
   const [Data,Setdata] = useState<datainter>({TestName:"",
     TestDescription:"",
-    AttemptDate:0, 
+    AttemptDate:0,
+    
+    Branch:"",
+    Year:"" 
   }
   )
 
@@ -65,6 +79,9 @@ function FacultyCreateCodingTest() {
       AttemptTime:Data.AttemptDate,
       TestExpireTime:Enddate,
       TestStartTime:Startdate,
+    
+      Branch:Data.Branch,
+      Year:Data.Year,
       Questions:[]
     }
 
@@ -173,6 +190,42 @@ function FacultyCreateCodingTest() {
     <label  className=' flex flex-col'>
       Attemp time (Enter time in hours)  *
       <Input type='number' onChange={HandleDate} value={Data.AttemptDate} name="AttemptDate" placeholder='Enter the time in hours number only'/>
+    </label>
+  </CardContent>
+
+  <CardContent>
+    <label>
+      Branch 
+      <Select onValueChange={(value)=>Setdata({...Data,Branch:value})} >
+  <SelectTrigger className="w-[180px]">
+    <SelectValue placeholder="Branch" />
+  </SelectTrigger>
+  <SelectContent>
+    <SelectItem value="All">All</SelectItem>
+    <SelectItem value="CSE">CSE</SelectItem>
+    <SelectItem value="CIVIL">CIVIL</SelectItem>
+    <SelectItem value="ME">ME</SelectItem>
+    <SelectItem value="AI & DS">AI & DS</SelectItem>
+  </SelectContent>
+</Select>
+    </label>
+  </CardContent>
+
+  <CardContent>
+    <label>
+      Year 
+      <Select onValueChange={(value)=>Setdata({...Data,Year:value})} >
+  <SelectTrigger className="w-[180px]">
+    <SelectValue placeholder="Year" />
+  </SelectTrigger>
+  <SelectContent>
+    <SelectItem value="All">All</SelectItem>
+    <SelectItem value="1">1</SelectItem>
+    <SelectItem value="2">2</SelectItem>
+    <SelectItem value="3">3</SelectItem>
+    <SelectItem value="4">4</SelectItem>
+  </SelectContent>
+</Select>
     </label>
   </CardContent>
 

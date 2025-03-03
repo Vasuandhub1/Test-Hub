@@ -19,7 +19,7 @@ const Student=new mongoose.Schema({
     },
     CodingTest:{
         type:[mongoose.Schema.Types.ObjectId],
-        ref:"code"
+        ref:"Code"
     },
     Year:{
         type:String,

@@ -38,9 +38,25 @@ const CodeTest = new mongoose.Schema({
         type:[mongoose.Schema.Types.ObjectId],
         ref:"Student"
     },
+    AttemptedTestStudentList:{
+        type:[mongoose.Schema.Types.ObjectId],
+        ref:"Student"
+    },
     Faculty:{
         type:mongoose.Schema.Types.ObjectId,
         ref:"Faculty"
+    },
+    Section:{
+        type:String,
+        default:"All",
+    },
+    Branch:{
+        type:String,
+        default:"All"
+    },
+    Year:{
+        type:String,
+        default:"All"
     }
 
 })

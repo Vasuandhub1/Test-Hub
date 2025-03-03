@@ -3,6 +3,9 @@ const codeQuestions = require("../models/codeQuestionBank")
 const Student = require("../models/Students")
 const { handelErr, handelSucess } = require("../utils/errHandler")
 const axios = require("axios")
+const { getTokenData, createToken } = require("../utils/createToken")
+const CodeTest =  require("../models/CodeTest")
+const Students = require("../models/Students")
 
 const CodingTestSubmission = async(req,res,next)=>{
     // temperary api 
@@ -45,4 +48,64 @@ const CodingTestSubmission = async(req,res,next)=>{
         return next(handelErr(res,err.message,err,404))
     }
 }
-module.exports = {CodingTestSubmission}
+
+const StartCodingTest  = async (req,res,next)=>{
+    try{
+        // so we have to update the both student and test list 
+        // and we havr to create the tokne of test time size 
+        // we have to check if the test is not expired yet
+        // test taking time should be greator than start time and less then end time 
+
+      const {Student} = req.cookies
+      const {Test_id} = req.params
+
+      if(Test_id){
+        const token = await getTokenData(Student)
+        const test = await CodeTest.findById(Test_id)
+
+        // now check for the test timing
+        if(Date.now() < new Date(test.TestExpireTime) && Date.now() >= new Date(test.TestStartTime) ){
+
+            // now check  if the student is present in the test student array
+            if(test.StudentList.includes(token.student_id)){
+
+                // now check if student can attaind the test
+                if(test.AttemptedTestStudentList.includes(token.student_id)){
+                    return next(handelErr(res,"Already Attempted Test","Can not attempt test multiple time",404))
+                }else{
+                    // now start the test for the student  
+                    // create Test Token 
+                    const TestTokenPayload = {
+                        _id:test._id,
+                        TestName:test.TestName
+                    } 
+                    const TestToken = await createToken(TestTokenPayload,"24h")
+
+                    // update the test Attainned list 
+                    await CodeTest.findByIdAndUpdate(test._id,{$push:{AttemptedTestStudentList:token.student_id}})
+                    await Students.findByIdAndUpdate(token.student_id,{$push:{CodingTest:test._id}})
+
+                    // now send the test Start cookie 
+                    res.cookie("CodingTest",TestToken,{expiresIn:new Date( Date().now + 1000*60*60*test.AttemptTime)})
+                    return next(handelSucess(res,"Start test All the best",test))
+                }
+            }else{
+                
+                return next(handelErr(res,"You are not eligeble for the test","Not eliglible ",404))
+            }
+
+            
+        }else{
+            return next(handelErr(res,"date err",Date.now() < new Date(test.TestExpireTime),404))
+        }
+
+
+      }else{
+        return next(handelErr(res,"Did not get the test id","please enter the test_id",404))
+      }
+
+    }catch(err){
+        return next(handelErr(res,err.message,err,404))
+    }
+}
+module.exports = {CodingTestSubmission,StartCodingTest}

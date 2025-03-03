@@ -67,7 +67,7 @@ export function LoginCard() {
             navigate("/FacultyHome")
           }
          
-        },2000)
+        },500)
     } catch (err) {
       if (err instanceof yup.ValidationError) {
         toast({ title: "Validation Error", description: err.errors.join(", ") });

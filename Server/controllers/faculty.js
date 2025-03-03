@@ -6,6 +6,7 @@ const Code = require("../models/codeQuestionBank")
 const Subject = require("../models/Subject")
 const MCQ = require("../models/MCQQuestionBank")
 const CodeTest =  require("../models/CodeTest")
+const Students = require("../models/Students")
 
 
 // now carete the function to regaiter the faculty
@@ -152,17 +153,65 @@ try{
 const CreateCodeTest = async(req,res,next)=>{
     try{
         const {Faculty} = req.cookies
-        const {TestName,TestDescription,TestStartTime,TestExpireTime,AttemptTime,Questions}=req.body
+        const {TestName,TestDescription,TestStartTime,TestExpireTime,AttemptTime,Questions,Branch,Year}=req.body
 
         // check if all the data are presnt 
         if(TestName && TestDescription && TestStartTime && TestExpireTime && AttemptTime && Questions){
             // now get the token data 
             const token  =  await getTokenData(Faculty)
-
-            const CreatedTest = await CodeTest.create({TestName,TestDescription,TestStartTime,TestExpireTime,AttemptTime,Questions,Faculty:token._id})
+            // find all the student and addto the list who can attempt the test
+            const StudentList = await Students.find()
+            if(Year==="All" && Branch === "All" ){
+                 const Student = StudentList.map(student => student._id);
+               
+            const CreatedTest = await CodeTest.create({TestName,TestDescription,TestStartTime,TestExpireTime,AttemptTime,Questions,Faculty:token._id,StudentList:Student})
 
             // now return the code test
             return next(handelSucess(res,"Sucessfully created the test",CreatedTest,200))
+            }else{
+                if(Year==="All" && Branch != "All"){
+                    
+                StudentList.filter((elem)=>{
+                    if(elem.Branch === Branch ){
+                        return true
+                    }else{
+                        return false
+                    }
+                })
+                
+                const Student = StudentList.map(student => student._id);
+
+                const CreatedTest = await CodeTest.create({TestName,Branch,TestDescription,TestStartTime,TestExpireTime,AttemptTime,Questions,Faculty:token._id,StudentList:Student})
+                return next(handelSucess(res,"Sucessfully created the test",CreatedTest,200))    
+            }
+
+                if(Branch === "All" && Year != "All"){
+                    
+                StudentList.filter((elem)=>{
+                    if( elem.Year === Year){
+                        return true
+                    }else{
+                        return false
+                    }
+                })
+                const Student = StudentList.map(student => student._id);
+
+                const CreatedTest = await CodeTest.create({TestName,Year,TestDescription,TestStartTime,TestExpireTime,AttemptTime,Questions,Faculty:token._id,StudentList:Student})
+                return next(handelSucess(res,"Sucessfully created the test",CreatedTest,200))
+                }
+                
+                StudentList.filter((elem)=>{
+                    if(elem.Branch === Branch && elem.Year === Year){
+                        return true
+                    }else{
+                        return false
+                    }
+                })
+                const Student = StudentList.map(student => student._id);
+
+                const CreatedTest = await CodeTest.create({TestName,Year,Branch,TestDescription,TestStartTime,TestExpireTime,AttemptTime,Questions,Faculty:token._id,StudentList:Student})
+                return next(handelSucess(res,"Sucessfully created the test",CreatedTest,200))
+            }
         }
         else{
             return next(handelErr(res,"Please fill all the details ","Enter all the details",404))
@@ -173,4 +222,14 @@ const CreateCodeTest = async(req,res,next)=>{
     }
 }
 
-module.exports = {FacultyRegister,CreateCodeTest,GetAllCodeQuestions,CreateCodingQuestion,CreateSubject,GetAllSubjects,CreateMCQQuestions}
+// now get all the availabe test
+const GetAllCodingTest = async(req,res,next)=>{
+    try{
+        const data = await CodeTest.find()
+        return next(handelSucess(res,"sucessfully fetchted the data",data))
+    }catch(err){
+        return next(handelErr(res,err.message,err,404))
+    }
+}
+
+module.exports = {FacultyRegister,GetAllCodingTest,CreateCodeTest,GetAllCodeQuestions,CreateCodingQuestion,CreateSubject,GetAllSubjects,CreateMCQQuestions}

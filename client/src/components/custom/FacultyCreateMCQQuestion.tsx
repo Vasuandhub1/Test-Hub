@@ -49,7 +49,7 @@ function FacultyCreateMCQQuestion() {
     const [Subjects,SetSubjects] = useState([]) 
 
     // functio s
-    const handelChange = (e:React.ChangeEvent<HTMLInputElement>|React.ChangeEvent<HTMLTextAreaElement>)=>{
+    const handelChange = (e:React.ChangeEvent<HTMLInputElement> | React.ChangeEvent<HTMLTextAreaElement>)=>{
         Setdata({...data,[e.target.name]:e.target.value})
     }
 
@@ -119,7 +119,7 @@ function FacultyCreateMCQQuestion() {
       </SelectTrigger>
       <SelectContent >
         <SelectGroup>
-          <SelectLabel>Correct Ans</SelectLabel>
+          <SelectLabel>Correct Ans *</SelectLabel>
           
           <SelectItem value='1'>1</SelectItem>
           <SelectItem value='2'>2</SelectItem>
