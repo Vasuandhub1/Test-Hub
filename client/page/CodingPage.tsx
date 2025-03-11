@@ -14,7 +14,7 @@ import {debounce} from "../utils/utils"
 import axios from 'axios'
 
 //    now handeling the functionb
-function CodingPage({SetDescription}) {
+function CodingPage({SetDescription,Question}) {
   const source_code=useSelector((state:RootState)=>state.code.code)
 
   const [language,setLanguage]=useState<number>(45)
@@ -28,6 +28,7 @@ function CodingPage({SetDescription}) {
     }
     SetOutput("compiling...")
      await axios.post("http://localhost:3000/student-test-hub/test",{data}).then((res)=>{
+      
       if(res!.data!.data!.status_id === 3){
         SetOutput("running...")
         setTimeout(()=>{
@@ -48,11 +49,11 @@ function CodingPage({SetDescription}) {
    
   }
   return (
-    <div>
+    <div className=''>
         <CodingNavbar onRun={handleRunButton} onSubmit={handleRunButton}/>
-      <div className='h-1/2'>
+      <div className='h-screen '>
     {SetDescription?<ResizablePanelGroup direction="horizontal">
-    <ResizablePanel><CodingDescription/></ResizablePanel>
+    <ResizablePanel><CodingDescription Question={Question}/></ResizablePanel>
     <ResizableHandle withHandle />
       <ResizablePanel>
       <ResizablePanelGroup direction='vertical'>

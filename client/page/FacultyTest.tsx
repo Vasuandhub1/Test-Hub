@@ -7,7 +7,7 @@ import AllTests from '@/components/custom/AllTests'
 function FacultyTest() {
   return (
     <div className='flex justify-center '>
-      <Tabs defaultValue="All Tests" className="w-[100rem]">
+      <Tabs defaultValue="All Tests" >
   <TabsList className='w-full'>
     <TabsTrigger className='w-full' value="All Tests">All Tests</TabsTrigger>
     <TabsTrigger className='w-full' value="Create Coding Test">Create Coding Test</TabsTrigger>

@@ -61,4 +61,4 @@ const CodeTest = new mongoose.Schema({
 
 })
 
-module.exports = mongoose.model("Test",CodeTest)
+module.exports = mongoose.model("tests",CodeTest)

@@ -164,7 +164,7 @@ const CreateCodeTest = async(req,res,next)=>{
             if(Year==="All" && Branch === "All" ){
                  const Student = StudentList.map(student => student._id);
                
-            const CreatedTest = await CodeTest.create({TestName,TestDescription,TestStartTime,TestExpireTime,AttemptTime,Questions,Faculty:token._id,StudentList:Student})
+            const CreatedTest = await CodeTest.create({TestName,TestDescription,TestStartTime,TestExpireTime,AttemptTime,Questions,Faculty:token.faculty_id,StudentList:Student})
 
             // now return the code test
             return next(handelSucess(res,"Sucessfully created the test",CreatedTest,200))
@@ -222,14 +222,6 @@ const CreateCodeTest = async(req,res,next)=>{
     }
 }
 
-// now get all the availabe test
-const GetAllCodingTest = async(req,res,next)=>{
-    try{
-        const data = await CodeTest.find()
-        return next(handelSucess(res,"sucessfully fetchted the data",data))
-    }catch(err){
-        return next(handelErr(res,err.message,err,404))
-    }
-}
 
-module.exports = {FacultyRegister,GetAllCodingTest,CreateCodeTest,GetAllCodeQuestions,CreateCodingQuestion,CreateSubject,GetAllSubjects,CreateMCQQuestions}
+
+module.exports = {FacultyRegister,CreateCodeTest,GetAllCodeQuestions,CreateCodingQuestion,CreateSubject,GetAllSubjects,CreateMCQQuestions}

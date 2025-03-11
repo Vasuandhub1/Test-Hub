@@ -5,6 +5,7 @@ import EditorTheme from "./slices/EditorTheme"
 import Code from "./slices/code"
 import StudentSlice from "./slices/Student"
 import FacultySlice from "./slices/Faculty"
+import CodeTestData from "./slices/CodeTestData"
 
 // Create the store with the reducer
 export const store = configureStore({
@@ -13,7 +14,8 @@ export const store = configureStore({
     EditorTheme:EditorTheme,
     code:Code,
     student:StudentSlice,
-    faculty:FacultySlice
+    faculty:FacultySlice,
+    CodeTestData:CodeTestData
   },
 });
 

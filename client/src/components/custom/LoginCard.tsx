@@ -72,7 +72,8 @@ export function LoginCard() {
       if (err instanceof yup.ValidationError) {
         toast({ title: "Validation Error", description: err.errors.join(", ") });
       } else {
-        toast({ title: "Error", description: "Please check your credentials" });
+        console.log(err.response.data.message)
+        toast({ title: "Error", description: err?.response?.data?.message });
       }
     }
     setSubmitting(false);

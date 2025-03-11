@@ -6,6 +6,7 @@ const axios = require("axios")
 const { getTokenData, createToken } = require("../utils/createToken")
 const CodeTest =  require("../models/CodeTest")
 const Students = require("../models/Students")
+const codeQuestionBank = require("../models/codeQuestionBank")
 
 const CodingTestSubmission = async(req,res,next)=>{
     // temperary api 
@@ -108,4 +109,38 @@ const StartCodingTest  = async (req,res,next)=>{
         return next(handelErr(res,err.message,err,404))
     }
 }
-module.exports = {CodingTestSubmission,StartCodingTest}
+// now get all the availabe test
+const GetAllCodingTest = async(req,res,next)=>{
+    try{
+        const data = await CodeTest.find().populate("Faculty")
+        
+        return next(handelSucess(res,"sucessfully fetchted the data",data))
+    }catch(err){
+        return next(handelErr(res,err.message,err,404))
+    }
+}
+
+const GetQuestion =  async(req,res,next)=>{
+    try{
+        const {QuesId} = req.params
+        const Question = await codeQuestionBank.findById(QuesId)
+
+        return next(handelSucess(res,"Question Sucessful",Question))
+    }catch(err){
+        return next(handelErr(res,err.message,err,404))
+    }
+}
+
+const EndTest = async(req,res,next)=>{
+    try{
+        const {CodingTest} = req.cookies
+
+        // now expire the cookie 
+        return res.cookie("CodingTest","",{})
+    }catch(err){
+        return next(handelErr(res,err.message,err,404))
+    }
+}
+
+
+module.exports = {CodingTestSubmission,StartCodingTest,GetAllCodingTest,GetQuestion}

@@ -7,8 +7,13 @@ import {
     CardHeader,
     CardTitle,
   } from "@/components/ui/card"
+  import axios from 'axios'
 
 function AllTests() {
+
+    const GetAllTests = async()=>{
+         const res =  await axios.get("")
+        }
   return (
     
     <Card className='w-[50rem] border-black dark:border-white'>

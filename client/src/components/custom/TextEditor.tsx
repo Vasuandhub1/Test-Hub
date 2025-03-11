@@ -53,7 +53,7 @@ useEffect(()=>{
       theme={EditorTheme}
       onChange={debounce((value:string) =>{const payload=value
         dispatch(setCode(payload))
-      } ,3000)}
+      } ,1000)}
     />
     </div>
   );

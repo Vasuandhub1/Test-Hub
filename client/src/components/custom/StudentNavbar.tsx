@@ -10,8 +10,14 @@ import { setStudent } from "../../../Redux/slices/Student";
 import { useDispatch } from "react-redux";
 
 
+import { Sun, Moon } from "lucide-react";
+
+import { toggleDarkMode } from "../../../Redux/slices/DarkLight";
+
+
 
 export default function StudentNavbar() {
+  const isDarkMode=useSelector((state:RootState)=>state.DarkLight.isDarkMode)
     const [activeTab, setActiveTab] = useState("Home");
     const navRef = useRef(null);
     const selectorRef = useRef(null);
@@ -46,11 +52,18 @@ export default function StudentNavbar() {
         }
       }
     }, [activeTab]);
-  
+    useEffect(() => {
+      document.documentElement.classList.toggle("dark", isDarkMode);
+      localStorage.setItem("theme", isDarkMode ? "dark" : "light");
+    }, [isDarkMode]);
+    
     return (
       <nav className="relative bg-zinc-300 flex justify-evenly text-black dark:bg-zinc-800 dark: p-4 shadow-lg">
         <div className="container mx-auto flex items-center justify-between">
           <div className="text-black dark:text-white text-lg font-bold">Test-Hub</div>
+          <Button  onClick={() => dispatch(toggleDarkMode())}>
+          {isDarkMode ? <Sun /> : <Moon />}
+        </Button>
           <ul ref={navRef} className="relative flex space-x-6 dark:text-white text-black">
             <motion.div
               ref={selectorRef}
@@ -59,7 +72,7 @@ export default function StudentNavbar() {
             {[
               { name: "Home", path: "/StudentHome" },
               { name: "Dashboard", path: "/dashboard" },
-              { name: "Tests", path: "/Tests" },
+              { name: "Tests", path: "/StudentTests" },
               { name: "Results", path: "/Results" },
               { name: "Profile", path: "/Profile" },
               { name: "Code Compiler", path: "/CodeCompiler"},

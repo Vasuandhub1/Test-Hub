@@ -11,7 +11,7 @@ const CodingNavbar = ({ onRun, onSubmit }) => {
   
 
   return (
-    <nav className={`flex justify-between items-center p-4 shadow-md ${darkMode ? "bg-slate-900 text-white" : "bg-zinc-300 text-black"}`}>
+    <nav className={`flex  justify-between items-center p-4 shadow-md ${darkMode ? "bg-slate-900 text-white" : "bg-zinc-300 text-black"}`}>
       {/* Logo */}
       <h1 className="text-xl font-bold">Code Editor</h1>
 
@@ -19,7 +19,7 @@ const CodingNavbar = ({ onRun, onSubmit }) => {
       <div className="flex gap-4">
         <Button variant="outline" onClick={onRun}>Run</Button>
         <Button variant="default" onClick={onSubmit}>Submit</Button>
-        <Button variant="ghost" onClick={() => dispatch(toggleDarkMode())}>
+        <Button variant="" onClick={() => dispatch(toggleDarkMode())}>
           {darkMode ? <Sun /> : <Moon />}
         </Button>
       </div>

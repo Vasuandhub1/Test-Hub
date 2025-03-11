@@ -18,6 +18,10 @@ import FacultyNavbar from "./components/custom/FacultyNavbar"
 import FacultyRoute from "./components/custom/FacultyRoute"
 import CreateQuestions from "../page/CreateQuestions"
 import FacultyTest from "../page/FacultyTest"
+import StudentTest from "../page/StudentTest"
+import TestStartConfirmaition from "./components/custom/TestStartConfirmaition"
+import CodingTest from "../page/CodingTest"
+import TestRoute from "./components/custom/TestRoute"
 
 
 
@@ -44,6 +48,9 @@ export default function Home() {
       <Route path="/StudentHome" Component={StudentHome}/>
       <Route  path="/test/code" element={<CodingPage SetDescription={true}/>}/>
       <Route  path="/CodeCompiler" Component={StudentCodeCompiler}/>
+      <Route path="/StudentTests" Component={StudentTest}/>
+      <Route path="/StudentTestStartConfirmation/:TestId" Component={TestStartConfirmaition}/>
+      
       </Route>
 
       {/* {faculty private routes} */}
@@ -55,6 +62,10 @@ export default function Home() {
         <Route path="/CreateQuestion" Component={CreateQuestions}></Route>
         <Route  path="/FacultyCodeCompiler" Component={StudentCodeCompiler}/>
         <Route path="/FacultyTest" Component={FacultyTest}/>
+      </Route>
+
+      <Route element={<TestRoute/>}>
+      <Route path="/Student/CodeingTest" Component={CodingTest}/>
       </Route>
       
     </Routes>
