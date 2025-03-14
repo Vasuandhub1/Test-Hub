@@ -74,7 +74,7 @@ const FacultyRegister = async (req,res,next)=>{
 const CreateCodingQuestion = async (req,res,next)=>{
     try{
         // now take the data  from the req body 
-        const {QuestionName,QuestionDescription,SpaceConstrains,TimeConstrains,SampleInputs,SampleOutputs,DifficultyLevel} = req.body
+        const {QuestionName,QuestionDescription,SpaceConstrains,TimeConstrains,SampleInputs,SampleOutputs,DifficultyLevel,HiddenTestCaseOutput,HiddenTestCaseInput} = req.body
 
         // now check all the parameters
         if(QuestionName && QuestionDescription && SpaceConstrains && TimeConstrains && SampleInputs && SampleOutputs){
@@ -82,7 +82,7 @@ const CreateCodingQuestion = async (req,res,next)=>{
             const question = await Code.create({QuesName:QuestionName,
                 QuesDescrition:QuestionDescription,
             InputTestCase:SampleInputs, OutputTestCase:SampleOutputs, TimeConstrains:TimeConstrains,
-        SpaceConstrains:SpaceConstrains,DifficultyLevel:DifficultyLevel}) 
+        SpaceConstrains:SpaceConstrains,DifficultyLevel:DifficultyLevel,HiddenTestCaseInput,HiddenTestCaseOutput}) 
         
         return next(handelSucess(res,"Sucessfully created the question ",question))
 
@@ -181,7 +181,7 @@ const CreateCodeTest = async(req,res,next)=>{
                 
                 const Student = StudentList.map(student => student._id);
 
-                const CreatedTest = await CodeTest.create({TestName,Branch,TestDescription,TestStartTime,TestExpireTime,AttemptTime,Questions,Faculty:token._id,StudentList:Student})
+                const CreatedTest = await CodeTest.create({TestName,Branch,TestDescription,TestStartTime,TestExpireTime,AttemptTime,Questions,Faculty:token.faculty_id,StudentList:Student})
                 return next(handelSucess(res,"Sucessfully created the test",CreatedTest,200))    
             }
 
@@ -196,7 +196,7 @@ const CreateCodeTest = async(req,res,next)=>{
                 })
                 const Student = StudentList.map(student => student._id);
 
-                const CreatedTest = await CodeTest.create({TestName,Year,TestDescription,TestStartTime,TestExpireTime,AttemptTime,Questions,Faculty:token._id,StudentList:Student})
+                const CreatedTest = await CodeTest.create({TestName,Year,TestDescription,TestStartTime,TestExpireTime,AttemptTime,Questions,Faculty:token.faculty_id,StudentList:Student})
                 return next(handelSucess(res,"Sucessfully created the test",CreatedTest,200))
                 }
                 
@@ -209,7 +209,7 @@ const CreateCodeTest = async(req,res,next)=>{
                 })
                 const Student = StudentList.map(student => student._id);
 
-                const CreatedTest = await CodeTest.create({TestName,Year,Branch,TestDescription,TestStartTime,TestExpireTime,AttemptTime,Questions,Faculty:token._id,StudentList:Student})
+                const CreatedTest = await CodeTest.create({TestName,Year,Branch,TestDescription,TestStartTime,TestExpireTime,AttemptTime,Questions,Faculty:token.faculty_id,StudentList:Student})
                 return next(handelSucess(res,"Sucessfully created the test",CreatedTest,200))
             }
         }

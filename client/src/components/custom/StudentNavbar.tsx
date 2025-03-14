@@ -71,10 +71,10 @@ export default function StudentNavbar() {
             />
             {[
               { name: "Home", path: "/StudentHome" },
-              { name: "Dashboard", path: "/dashboard" },
+              { name: "Dashboard", path: "/StudentDashboard" },
               { name: "Tests", path: "/StudentTests" },
-              { name: "Results", path: "/Results" },
-              { name: "Profile", path: "/Profile" },
+              { name: "Results", path: "/StudentResult" },
+              { name: "Profile", path: "/StudentProfile" },
               { name: "Code Compiler", path: "/CodeCompiler"},
             ].map((item) => (
               <li key={item.name}>

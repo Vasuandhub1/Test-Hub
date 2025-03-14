@@ -14,10 +14,12 @@ import {
   import { useSelector,useDispatch } from 'react-redux'
   import axios from 'axios'
   import { StartTest } from '../../../Redux/slices/CodeTestData'
+import { toast } from '@/hooks/use-toast'
 
 
 function TestStartConfirmaition() {
   const params=useParams()
+  const [Check,SetCheck] = useState(false)
   const navigate = useNavigate()
   console.log(params.TestId)
   const dispatch = useDispatch()
@@ -25,12 +27,15 @@ function TestStartConfirmaition() {
   // now function to start the test
   const StartTests = async()=>{
     try{
-      console.log("hello")
+     if(Check){
       const res = await axios.get(`http://localhost:3000/student-test-hub/Student/CodeTest/${params.TestId}`,{withCredentials:true})
       console.log(res.data.data)
       const payload ={TestId:res.data.data._id,Questions:res.data.data.Questions}
       dispatch(StartTest(payload))
       navigate("/Student/CodeingTest")
+     }else{
+      toast({title:"Please read all the instruction before starting the test"})
+     }
     }catch(err){
       console.log(err)
     }
@@ -64,7 +69,10 @@ function TestStartConfirmaition() {
             </ul>
           </CardContent>
           <CardFooter className='gap-3 flex items-center'>
-          <Checkbox/> Check if readed all the instruction carefully andwant to start the test right now
+          <Checkbox onClick={()=>{
+            SetCheck((data)=>data=!data)
+            console.log(Check)
+          }} /> Check if readed all the instruction carefully andwant to start the test right now
           </CardFooter>
         </Card>
         </CardContent>

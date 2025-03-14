@@ -8,11 +8,16 @@ const CodeTestResult = new mongoose.Schema({
     },
     TotalMarks:{
         type:String,
-        required:true
+        required:true,
+        default:100
     },
     TotalMarksObtained:{
         type:String,
         required:true
+    },
+    QuestionId:{
+        type:[mongoose.Schema.Types.ObjectId],
+        ref:"Code"
     },
     TestId:{
         type:mongoose.Schema.Types.ObjectId,

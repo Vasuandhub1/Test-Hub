@@ -1,6 +1,6 @@
 import React from 'react'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import StudentCodingTestsList from '@/components/custom/StudentCodingTestsList'
+import StudentCodingTestsList from "../src/components/custom/StudentCodingTestsList"
 
 
 function StudentTest() {

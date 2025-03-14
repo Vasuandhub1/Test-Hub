@@ -22,6 +22,11 @@ import StudentTest from "../page/StudentTest"
 import TestStartConfirmaition from "./components/custom/TestStartConfirmaition"
 import CodingTest from "../page/CodingTest"
 import TestRoute from "./components/custom/TestRoute"
+import Profile from "./components/custom/Profile"
+import StudentDashboard from "./components/custom/StudentDashboard"
+import StudentResults from "./components/custom/StudentResults"
+import { ForgotPasswordEmail } from "./components/custom/ForgotPasswordEmail"
+import { ResetPassword } from "./components/custom/ResetPassword"
 
 
 
@@ -38,6 +43,8 @@ export default function Home() {
       <Route  path="/verify/:token" Component={EmailVerify}/> 
       <Route path="/StudentRegister" Component={StudentRegister}/>
       <Route path="/FacultyRegister" Component={FacultyRegister}></Route>
+      <Route path="/ForgotPasswordEmail" Component={ForgotPasswordEmail}/>
+      <Route path="/ResetPassword/:token" Component={ResetPassword}/>
 
       {/* student private route */} 
 
@@ -49,6 +56,9 @@ export default function Home() {
       <Route  path="/test/code" element={<CodingPage SetDescription={true}/>}/>
       <Route  path="/CodeCompiler" Component={StudentCodeCompiler}/>
       <Route path="/StudentTests" Component={StudentTest}/>
+      <Route path="StudentProfile" Component={Profile}/>
+      <Route path="/StudentDashboard" Component={StudentDashboard}/>
+      <Route path="/StudentResult" Component={StudentResults}/>
       <Route path="/StudentTestStartConfirmation/:TestId" Component={TestStartConfirmaition}/>
       
       </Route>

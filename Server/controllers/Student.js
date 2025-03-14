@@ -2,6 +2,7 @@ const Student = require("../models/Students")
 const {handelErr, handelSucess}=require("../utils/errHandler")
 const User = require("../models/User")
 const {createToken, getTokenData}=require("../utils/createToken")
+const CodeTestResult = require("../models/CodeTestResult")
 
 
 const StudentRegister = async(req,res,next)=>{
@@ -60,4 +61,23 @@ const StudentRegister = async(req,res,next)=>{
     }
 }
 
-module.exports={StudentRegister}
+const GetAllResults = async(req,res,next)=>{
+    try{
+        const {Student}=req.cookies
+        if(Student){
+            const Token = await getTokenData(Student)
+
+            // now get all the test of the students 
+            const results = await CodeTestResult.find({StudentId:Token.student_id})
+
+            return next(handelSucess(res,"Sucessful",results))
+        }else{
+            return next(handelErr(res,"Student Not found","",401))
+        }
+    }catch(err){
+        return next(handelErr(res,err.message,err,404))
+    }
+
+}
+
+module.exports={StudentRegister,GetAllResults}

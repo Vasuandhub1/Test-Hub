@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { useEffect } from 'react';
 import { Button } from "../src/components/ui/button";
-import { SidebarOpen, Sliders } from 'lucide-react';
+ 
 import CodingPage from './CodingPage'
 import { useSelector ,useDispatch } from 'react-redux';
 import { RootState } from '@reduxjs/toolkit/query';
@@ -14,6 +14,7 @@ function CodingTest() {
     const Dispatch = useDispatch()
     const [...Questions]  = useSelector((state:RootState)=>state.CodeTestData.Questions)
     interface QuestionData{
+       _id:string,
         QuestionName:string,
         QuestionDescription:string,
         InputTestCase:string[],
@@ -23,6 +24,7 @@ function CodingTest() {
         TimeConstrains:string
     }
     const[Question,setQuestion]=useState<QuestionData>({
+        _id:"",
         QuestionName:"",
         QuestionDescription:"",
         InputTestCase:[],
@@ -34,10 +36,22 @@ function CodingTest() {
     const ExitTest = async()=>{
         Dispatch(EndTest())
     }
+
+    const SubmitteTest =async()=>{
+      try{
+        const res = await axios.post("http://localhost:3000/student-test-hub/Student/TestCodeSubmit","",{withCredentials:true})
+        toast({title:res?.data?.data?.message,description:res?.data?.data?.data})
+        Dispatch(EndTest())
+      }catch(err){
+        console.log(err)
+      }
+    }
+    console.log(Question,"Question")
     const GetQuestion = async()=>{
         try{
             const res=await axios.get(`http://localhost:3000/student-test-hub/Student/CodeQuestion/${Questions[CurrentQuestion]}`)
             setQuestion({QuestionName:res.data.data.QuesName,
+              _id:res.data.data._id,
                 QuestionDescription:res.data.data.QuesDescrition,
                 InputTestCase:[...res.data.data.InputTestCase],
                 OutputTestCase:[...res.data.data.OutputTestCase],
@@ -49,6 +63,8 @@ function CodingTest() {
             console.log(err)
         }
     }
+
+    
 
     const [CurrentQuestion,SetCurrentQuestion] = useState(0)
 
@@ -101,8 +117,8 @@ function CodingTest() {
           }}>Next</Button>
         </div>
         <div className='flex gap-4'>
-          <Button>Submit Test</Button>
-          <Button onClick={EndTest}>Exit</Button>
+          <Button onClick={SubmitteTest}>Submit Test</Button>
+          <Button onClick={ExitTest}>Exit</Button>
         </div>
       </nav>
 

@@ -11,7 +11,14 @@ import {
   import {useSelector } from 'react-redux'
 import { RootState } from '@reduxjs/toolkit/query'
 import {debounce} from "../utils/utils"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+
+
 import axios from 'axios'
+import { Input } from '@/components/ui/input'
+import { Textarea } from '@/components/ui/textarea'
+import { stdin } from 'process'
+import { toast } from '@/hooks/use-toast'
 
 //    now handeling the functionb
 function CodingPage({SetDescription,Question}) {
@@ -19,38 +26,59 @@ function CodingPage({SetDescription,Question}) {
 
   const [language,setLanguage]=useState<number>(45)
   const [output,SetOutput]=useState("")
+  const [Input,SetInput]=useState("")
+  const [Terminal,SetTerminal] = useState("")
   console.log(language)
+
+  const SubmitteSolution = async()=>{
+        try{
+          const data={"language_id":language,
+            source_code
+          }
+          const res = await axios.post("http://localhost:3000/student-test-hub/Student/CodeQuestionSubmission",{data,QuestionId:Question._id},{withCredentials:true})
+          console.log(res)
+
+          SetOutput(`${res!.data!.data!.status!.description},${res?.data?.data?.status_id}`)
+
+        }catch(err){
+          console.log(err)
+        }
+      }
 
   // now handel the functio to run the code 
   const handleRunButton = async()=>{
     const data={"language_id":language,
       source_code
     }
-    SetOutput("compiling...")
+    if(Input){
+      data.stdin=Input
+    }
+    
+    SetTerminal("compiling...")
      await axios.post("http://localhost:3000/student-test-hub/test",{data}).then((res)=>{
       
       if(res!.data!.data!.status_id === 3){
-        SetOutput("running...")
+        SetTerminal("running...")
         setTimeout(()=>{
-          SetOutput(res!.data!.data!.stdout)
+          SetTerminal(res!.data!.data!.stdout)
         },3000)
         }else{
-          SetOutput("running...")
+          SetTerminal("running...")
           setTimeout(() => {
-            SetOutput(res!.data!.data!.status!.description)
+            SetTerminal(res!.data!.data!.status!.description)
           }, 3000);
         }
 
     }).catch((err)=>{
-      SetOutput("Err in the server")
-      alert(err)
+      SetTerminal("Err in the server")
+      toast({title:"Server Err",description:err.message})
     })
     
    
   }
   return (
     <div className=''>
-        <CodingNavbar onRun={handleRunButton} onSubmit={handleRunButton}/>
+        <CodingNavbar onRun={handleRunButton} SetDescription={SetDescription} onSubmit={SubmitteSolution}/>
       <div className='h-screen '>
     {SetDescription?<ResizablePanelGroup direction="horizontal">
     <ResizablePanel><CodingDescription Question={Question}/></ResizablePanel>
@@ -62,8 +90,27 @@ function CodingPage({SetDescription,Question}) {
       </ResizablePanel>
       <ResizableHandle withHandle />
       <ResizablePanel >
-        
-          {output}
+        {/* navigation menue fo rthe testst */}
+        <Tabs defaultValue="Terminal" className="w-[400px]">
+  <TabsList>
+    <TabsTrigger value="Terminal">Terminal</TabsTrigger>
+    <TabsTrigger value="Output">Output</TabsTrigger>
+    <TabsTrigger value="Input">Input</TabsTrigger>
+  </TabsList>
+  <TabsContent value="Terminal" className='p-2'><p className=' text-lg font-mono'> Terminal :{Terminal}</p></TabsContent>
+  <TabsContent value="Output">{output}</TabsContent>
+  <TabsContent value="Input" className='p-2'>
+    <div >
+      <label htmlFor="">
+        Enter Custom Input (To check your code)
+      <Textarea onChange={(e)=>SetInput(e.target.value)} placeholder='The output will be displayed on the Terminal' ></Textarea>
+      </label>
+    </div>
+  </TabsContent>
+</Tabs>
+
+
+
       </ResizablePanel>
       </ResizablePanelGroup> 
       </ResizablePanel>     
@@ -71,7 +118,7 @@ function CodingPage({SetDescription,Question}) {
     <ResizablePanel><TextEditor setLanguage={setLanguage}/></ResizablePanel>
     <ResizableHandle withHandle />
       <ResizablePanel>
-     {output}
+     {Terminal}
       </ResizablePanel>     
     </ResizablePanelGroup>}
       </div>

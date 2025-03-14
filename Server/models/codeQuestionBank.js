@@ -29,10 +29,18 @@ const question=new mongoose.Schema({
         type:String,
         required:true
     },
+    HiddenTestCaseInput:{
+        type:String,
+        required:true
+    },
+    HiddenTestCaseOutput:{
+        type:String,
+        required:true
+    },
     QuestionType:{
         type:String,
         default:"Code"
-    }
+    } 
 })
 
 module.exports=mongoose.model("Code",question)

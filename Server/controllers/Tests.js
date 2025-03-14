@@ -7,6 +7,7 @@ const { getTokenData, createToken } = require("../utils/createToken")
 const CodeTest =  require("../models/CodeTest")
 const Students = require("../models/Students")
 const codeQuestionBank = require("../models/codeQuestionBank")
+const CodeTestResult = require("../models/CodeTestResult")
 
 const CodingTestSubmission = async(req,res,next)=>{
     // temperary api 
@@ -14,15 +15,15 @@ const CodingTestSubmission = async(req,res,next)=>{
     try{
         // now take codeing details from the front end 
         const {data} = req.body
-        console.log("data",data.language_id)
+        
         if(data){
-            const token = await axios.post("https://judge0-ce.p.rapidapi.com/submissions?base64_encoded=false&wait=false&fields=*",{language_id:data.language_id,source_code:data.source_code,stdin:data.stdin},{
+            const token = await axios.post("https://judge0-ce.p.rapidapi.com/submissions?base64_encoded=false&wait=false&fields=*",{language_id:data.language_id,source_code:data.source_code,stdin:data.stdin,expected_output:data.expected_output},{
             headers:{"Content-Type":"application/json",
                 "x-rapidapi-host":"judge0-ce.p.rapidapi.com",
                 "x-rapidapi-key":"8c9941baf7msh9d764d6f2734fedp1cf310jsnd105a9436dc5"
             }
         })
-        console.log(token,"token")
+      
 
         // now check if we get the token 
         if(token){
@@ -34,7 +35,7 @@ const CodingTestSubmission = async(req,res,next)=>{
                         "x-rapidapi-key":"8c9941baf7msh9d764d6f2734fedp1cf310jsnd105a9436dc5"
                     }
                 })
-                console.log(result.data , "result")
+                
                 return next(handelSucess(res,"compiled sucessful ",result.data,200))
             },1000)
             
@@ -142,5 +143,140 @@ const EndTest = async(req,res,next)=>{
     }
 }
 
+const handleQuestionCodeSubmitte = async(req,res,next)=>{
+    try{
+        //  now take the question id ,student id and test id from the req body 
 
-module.exports = {CodingTestSubmission,StartCodingTest,GetAllCodingTest,GetQuestion}
+        const {Student,CodingTest}=req.cookies
+        const {data,QuestionId}=req.body
+
+        // cehck if we get both the token 
+        if(Student,CodingTest){
+            // now decode the tokens 
+            const StudentToken = await getTokenData(Student)
+            const TestToken = await getTokenData(CodingTest)
+            if(data && QuestionId){
+                console.log(data?.language_id)
+                console.log(data?.source_code)
+                console.log(data?.stdin)
+                console.log(data?.expected_output)
+                const Question = await codeQuestionBank.findById(QuestionId)
+                console.log(Question)
+                // now we have to submitte the code and check if the answer is correct or not
+                const token = await axios.post("https://judge0-ce.p.rapidapi.com/submissions?base64_encoded=false&wait=false&fields=*",{language_id:data.language_id,source_code:data.source_code,stdin:Question.HiddenTestCaseInput,expected_output:Question.HiddenTestCaseOutput},{
+                    headers:{"Content-Type":"application/json",
+                        "x-rapidapi-host":"judge0-ce.p.rapidapi.com",
+                        "x-rapidapi-key":"8c9941baf7msh9d764d6f2734fedp1cf310jsnd105a9436dc5"
+                    }
+                })
+
+                // so if we get the token
+                if(token){
+                    // now get the compiled solution 
+                    setTimeout(async()=>{
+                        const result = await axios.get(`https://judge0-ce.p.rapidapi.com/submissions/${token.data.token}?base64_encoded=false&wait=false&fields=*`,{
+                            headers:{"Content-Type":"application/json",
+                                "x-rapidapi-host":"judge0-ce.p.rapidapi.com",
+                                "x-rapidapi-key":"8c9941baf7msh9d764d6f2734fedp1cf310jsnd105a9436dc5"
+                            }
+                        })
+                        console.log(result.data)
+                        if(result){
+                            // now check if the solution is correct update the students test marks by checking if the solution is presubmitted or not 
+                            // if it is the first submission (check if the codetestResult exist for the student test)
+                            if(result?.data?.status?.id === 3){
+                            const IsTest = await CodeTestResult.findOne({StudentId:StudentToken.student_id,TestId:TestToken._id})
+                            
+                            if(IsTest){
+                                // check of the student already submitted for the same question 
+                                if(!IsTest.QuestionId.includes(QuestionId)){
+                                    let marks=0
+                                    if(Question.DifficultyLevel==="Easy"){
+                                        marks=IsTest.TotalMarksObtained+5
+                                    }else if(Question.DifficultyLevel==="Medium"){
+                                        marks=IsTest.TotalMarksObtained+10
+                                    }else{
+                                        marks=IsTest.TotalMarksObtained+15
+                                    }
+                                    // now update the test
+                                    await CodeTestResult.findByIdAndUpdate(
+                                        IsTest._id,
+                                        {
+                                          TotalMarksObtained: marks, 
+                                          $push: { QuestionId: QuestionId } // Ensure QuestionId is a valid value
+                                        },
+                                        { new: true } // To return the updated document
+                                      );
+                                      
+                                    return next(handelSucess(res,"Submitted sucessful",result.data))
+                                }else{
+                                    return next(handelSucess(res,"Submitted sucessful",result.data))
+                                }
+                            }else{
+                                // now create the first submission and add the merks
+                                let marks=0
+                                    if(Question.DifficultyLevel==="Easy"){
+                                        marks=5
+                                    }else if(Question.DifficultyLevel==="Medium"){
+                                        marks=10
+                                    }else{
+                                        marks=15
+                                    }
+                                    await CodeTestResult.create({TestId:TestToken._id, QuestionId:[QuestionId],TotalMarksObtained:marks,StudentId:StudentToken.student_id})
+
+                                    return next(handelSucess(res,"Submitted sucessful",result.data))
+                            }
+
+                        }else{
+                            return next(handelSucess(res,"Wrong ans",result.data))
+                        }
+                    }else{
+                        return next(handelErr(res,"Try again","please try agaain",400))
+                    }
+                    },1000)
+
+                }else{
+                    return next(handelErr(res,"Code compiler server err","code server err",404))
+                }
+
+            }else{
+                return next(handelErr(res,"code data not found","Code data err || questionId",404))
+            }
+        }else{
+            return next(handelErr(res,"did not found cookies","Err",401))
+        }
+    }catch(err){
+        return next(handelErr(res,err.message,err,404))
+    }
+}
+
+const SubmitTest = async(req,res,next)=>{
+    try{
+        // we have to check if the 
+        const {Student,CodingTest}=req.cookies
+        const {data,QuestionId}=req.body
+
+        // cehck if we get both the token 
+        if(Student,CodingTest){
+            // now decode the tokens 
+            const StudentToken = await getTokenData(Student)
+            const TestToken = await getTokenData(CodingTest)
+
+            const IsTest = await CodeTestResult.findOne({StudentId:StudentToken.student_id,TestId:TestToken._id})
+            if(IsTest){
+                return next(handelSucess(res,"Test Saved Sucessful","sucess"))
+            }else{
+                await CodeTestResult.create({TestId:TestToken._id,TotalMarksObtained:0,StudentId:StudentToken.student_id})
+                return next(handelSucess(res,"Test Saved Sucessful ","Test Submitted with out any Submission"))
+            }
+        }
+            else{
+                return next(handelErr(res,"student ans test not found","Err",402))
+            }
+    }catch(err){
+        return next(handelErr(res,err.message,err,404))
+    }
+}
+
+
+module.exports = {CodingTestSubmission,SubmitTest,StartCodingTest,handleQuestionCodeSubmitte,GetAllCodingTest,GetQuestion}

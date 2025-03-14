@@ -1,8 +1,8 @@
 const express = require("express")
 const route = express.Router()
-const {StudentRegister} = require("../controllers/Student")
+const {StudentRegister,GetAllResults} = require("../controllers/Student")
 const{IsCreateStudent} = require("../middlewares/authMiddleWare")
-const {CodingTestSubmission,StartCodingTest, GetQuestion} = require("../controllers/Tests")
+const {CodingTestSubmission,StartCodingTest, GetQuestion,SubmitTest,handleQuestionCodeSubmitte} = require("../controllers/Tests")
 const {GetAllCodingTest} = require("../controllers/Tests")
 
 // now handle the student routes
@@ -11,6 +11,9 @@ route.post("/test",CodingTestSubmission)
 route.get("/Student/CodeTests",GetAllCodingTest)
 route.get("/Student/CodeTest/:Test_id",StartCodingTest)
 route.get("/Student/CodeQuestion/:QuesId",GetQuestion)
+route.post("/Student/CodeQuestionSubmission",handleQuestionCodeSubmitte)
+route.post("/Student/TestCodeSubmit",SubmitTest)
+route.get("/StudentResult",GetAllCodingTest)
 
 // now export the route to the 
 module.exports = route

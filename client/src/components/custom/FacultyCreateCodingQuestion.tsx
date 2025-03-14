@@ -45,7 +45,9 @@ function FacultyCreateCodingQuestion() {
         SampleInput4:string,
         output4:string,
         SampleInput5:string,
-        output5:string
+        output5:string,
+        HiddenTestCaseInput:string,
+        HiddenTestCaseOutput:string
     }
     const[data,Setdata]=useState<question>({QuestionName:"",
         QuestionDescription:"",
@@ -61,12 +63,15 @@ function FacultyCreateCodingQuestion() {
         SampleInput4:"",
         output4:"",
         SampleInput5:"",
-        output5:""})
+        output5:"",
+        HiddenTestCaseInput:"",
+        HiddenTestCaseOutput:""
+      })
 
         const handelChange = (e:React.ChangeEvent<HTMLInputElement>| React.ChangeEvent<HTMLTextAreaElement>)=>{
             Setdata({...data,[e.target.name]:e.target.value})
         }
-        console.log(data,"data")
+        
 
         const handleCreateCodeQuestion = async()=>{
             const payload ={QuestionName:data.QuestionName,
@@ -75,7 +80,10 @@ function FacultyCreateCodingQuestion() {
                 TimeConstrains:data.TimeConstrains,
                 DifficultyLevel:data.DifficultyLevel,
                 SampleInputs:[data.SampleInput1,data.SampleInput2,data.SmapleInput3,data.SampleInput4,data.SampleInput5],
-                SampleOutputs:[data.output1,data.output2,data.output3,data.output4,data.output5]}
+                SampleOutputs:[data.output1,data.output2,data.output3,data.output4,data.output5],
+                HiddenTestCaseInput:data.HiddenTestCaseInput,
+                HiddenTestCaseOutput:data.HiddenTestCaseOutput  
+              }
         await axios.post('http://localhost:3000/Faculty-test-hub/Faculty/CreateCodingQuestion',payload,{withCredentials:true}).then(()=>{
             toast({title:"Sucessful",description:"Created the coding question"})
             Setdata({QuestionName:"",
@@ -92,8 +100,12 @@ function FacultyCreateCodingQuestion() {
                 SampleInput4:"",
                 output4:"",
                 SampleInput5:"",
-                output5:""})
+                output5:"",
+                HiddenTestCaseInput:"",
+                HiddenTestCaseOutput:""
+              })
         }).catch((err)=>{
+          console.log(err)
             toast({title:"Err in Creating dataa ", description:err.message})
         })
 
@@ -205,6 +217,16 @@ function FacultyCreateCodingQuestion() {
     <label>
          Output 5 *
         <Input type='text' onChange={handelChange} value={data.output5} name='output5' placeholder='output 5' required></Input>
+    </label>
+   </CardContent>
+   <CardContent>
+    <label>
+    Hidden test case input*
+        <Textarea  onChange={handelChange} value={data.HiddenTestCaseInput} name='HiddenTestCaseInput' placeholder='HiddenTestCaseInput' required></Textarea>
+    </label>
+    <label>
+    Hidden test case output* 
+        <Textarea  onChange={handelChange} value={data.HiddenTestCaseOutput} name='HiddenTestCaseOutput' placeholder='HiddenTestCaseOutput' required></Textarea>
     </label>
    </CardContent>
    </Card>

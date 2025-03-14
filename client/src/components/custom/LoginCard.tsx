@@ -108,7 +108,13 @@ export function LoginCard() {
         </div>
         <div className="text-center mt-4 text-sm text-neutral-500 dark:text-neutral-300">
           Already have an account? <NavLink to="/register" className="text-blue-600 dark:text-blue-400 font-semibold hover:underline">Sign In</NavLink>
+          
         </div>
+        <div className="text-center mt-4 text-sm text-neutral-500 dark:text-neutral-300">
+          Forgot Password? <NavLink to="/ForgotPasswordEmail" className="text-blue-600 dark:text-blue-400 font-semibold hover:underline">help</NavLink>
+          
+        </div>
+
       </div>
     </div>
   );

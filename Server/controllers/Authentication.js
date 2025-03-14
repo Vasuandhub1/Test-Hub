@@ -233,9 +233,67 @@ const loginUser= async(req,res,next)=>{
     }
 }
 
+const ResetPasswordEmailVerification = async(req,res,next)=>{
+    try{
+        const {Email,url} = req.body
+       
+        if(Email && url){
+            // so if we get the emil 
+            
+            const IsEmail = await User.findOne({userEmail:Email})
+            
+            if(IsEmail){
+                const payload = {
+                    _id:IsEmail._id,
+                    email:IsEmail.userEmail
+                }
 
+                // now generate the token
+                const token = await createToken(payload,"2h") 
+
+                // now send the emailn
+                const send_mail=await mailServices(Email,"PasswordChange",`${url}/:${token}`)
+
+                await User.findByIdAndUpdate(IsEmail._id,{emailVerificationTokenExpiry:new Date(Date.now()+2*60*60*1000)})
+                return next(handelSucess(res,"Reset Token send sucessful. Change Password with in 2 hours",payload))
+            }
+        }else{
+            return next(handelErr(res,"please send email",IsEmail,401))
+        }
+    }catch(err){
+        return next(handelErr(res,err.message,err,404))
+    }
+}
+
+const ResetPassword = async(req,res,next)=>{
+    try{
+        const {password} = req.body
+        const{token}=req.params
+        
+        if(password && token){
+            
+            const Token = await getTokenData(token.substr(1))
+
+
+            bcrypt.hash(password,10).then(async(data)=>{
+                await User.findByIdAndUpdate(Token._id,{userPassword:data,emailVerificationToken:null,emailVerificationTokenExpiry:null})
+
+                return next(handelSucess(res,"sucessful changed password","Sucessful"))
+            }).catch((err)=>{
+                return next(handelErr(res,err.message,err,404))
+            })
+            
+
+            
+        }else{
+            return next(handelErr(res,"Token not found","Token err",401))
+        }
+    }catch(err){
+        return next(handelErr(res,err.message,err,404))
+    }
+}
 
 
 
 // exporting the controllers
-module.exports={RegisterUser,EmailValidate,loginUser}
+module.exports={RegisterUser,EmailValidate,loginUser,ResetPassword,ResetPasswordEmailVerification}

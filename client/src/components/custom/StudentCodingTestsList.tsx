@@ -72,20 +72,20 @@ function StudentCodingTestsList() {
 
                         <CardDescription className='flex justify-end items-center flex-wrap gap-2'>
         
-                           <CardTitle className='text-white'>Faculty Name : </CardTitle> {elem.Faculty.Fname}
+                           <CardTitle className='text-white'>Faculty Name : </CardTitle> {elem?.Faculty?.Fname}
                         </CardDescription>
                         
                         <CardDescription className='flex justify-end items-center flex-wrap gap-2'>
         
-                        <CardTitle className='text-white'>Time To attempt : </CardTitle>  {elem.AttemptTime}hrs
+                        <CardTitle className='text-white'>Time To attempt : </CardTitle>  {elem?.AttemptTime}hrs
                         </CardDescription>
 
                     </CardHeader>
                 </Card>
             </CardContent>
             <CardFooter className='flex justify-evenly'>
-                <CardTitle>Branch : {elem.Branch} </CardTitle>
-                <CardTitle>Year : {elem.Year} </CardTitle>
+                <CardTitle>Branch : {elem?.Branch} </CardTitle>
+                <CardTitle>Year : {elem?.Year} </CardTitle>
             </CardFooter>
 
         </Card>

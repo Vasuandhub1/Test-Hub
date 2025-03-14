@@ -1,13 +1,17 @@
 import { useState, useEffect,useRef } from "react";
 import { NavLink } from "react-router-dom";
 import { motion } from "framer-motion";
-import { useSelector } from "react-redux";
+import { useSelector,useDispatch } from "react-redux";
 import { RootState } from "@reduxjs/toolkit/query";
 import { Button } from "../ui/button";
+import { setFaculty } from "../../../Redux/slices/Faculty";
+import { toast } from "@/hooks/use-toast";
+
 
 
 
 export default function FacultyNavbar() {
+  const dispatch  = useDispatch()
     const [activeTab, setActiveTab] = useState("Home");
     const navRef = useRef(null);
     const selectorRef = useRef(null);
@@ -24,6 +28,19 @@ export default function FacultyNavbar() {
         }
       }
     }, [activeTab]);
+
+    const logout = async()=>{
+      toast({title:"sucessful logout", description:"Faculty logout sucessful"})
+            const payload={
+              DOB:Date.now(),
+              Enroll:0,
+              branch:"",
+              email:"",
+              name:"",
+              role:"",
+              }
+            dispatch(setFaculty(payload))
+    }
   
     return (
       <nav className="relative bg-zinc-300 flex justify-evenly text-black dark:bg-zinc-800 dark: p-4 shadow-lg">
@@ -60,7 +77,7 @@ export default function FacultyNavbar() {
         </div>
         <div className="text-black dark:text-white flex  justify-evenly gap-3 items-center text-lg font-bold">
             <div>{name}</div>
-            <Button className="bg-red-700 text-white hover:bg-white hover:text-black dark:hover:text-white dark:hover:bg-black">logout</Button>
+            <Button onClick={logout} className="bg-red-700 text-white hover:bg-white hover:text-black dark:hover:text-white dark:hover:bg-black">logout</Button>
           </div>
       </nav>
   );
