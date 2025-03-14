@@ -2,6 +2,7 @@ import React from 'react'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import FacultyCreateCodingTest from "../src/components/custom/FacultyCreateCodingTest"
 import AllTests from '@/components/custom/AllTests'
+import FacultyCreateMCQTest from '@/components/custom/FacultyCreateMCQTest'
 
 
 function FacultyTest() {
@@ -15,7 +16,7 @@ function FacultyTest() {
   </TabsList>
   <TabsContent value="Create Coding Test"><FacultyCreateCodingTest/></TabsContent>
   <TabsContent value="All Tests"><AllTests></AllTests></TabsContent>
-  <TabsContent value="Create MCQ Test">Change your password here.</TabsContent>
+  <TabsContent value="Create MCQ Test"><FacultyCreateMCQTest/></TabsContent>
 </Tabs>
 
     </div>

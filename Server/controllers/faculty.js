@@ -7,6 +7,8 @@ const Subject = require("../models/Subject")
 const MCQ = require("../models/MCQQuestionBank")
 const CodeTest =  require("../models/CodeTest")
 const Students = require("../models/Students")
+const MCQtest = require("../models/MCQtest")
+const MCQQuestionBank = require("../models/MCQQuestionBank")
 
 
 // now carete the function to regaiter the faculty
@@ -98,14 +100,17 @@ const CreateCodingQuestion = async (req,res,next)=>{
 const CreateMCQQuestions = async(req,res,next)=>{
     try{
         const {Faculty} = req.cookies
-        const {QuestionDescription,Subject,options,CorrectOption} = req.body
-
-        if(QuestionDescription && Subject && options && CorrectOption){
+        const {QuestionDescription,subject,options,CorrectOption} = req.body
+        console.log(subject)
+        if(QuestionDescription && subject && options && CorrectOption){
             // now create the question
             const token = await getTokenData(Faculty)
-            const create  =  await MCQ.create({QuesDescription:QuestionDescription,subjectCode:Subject,correctAns:CorrectOption,faculty:token._id,options:options})
+            const create  =  await MCQ.create({QuesDescription:QuestionDescription,subjectCode:subject,correctAns:CorrectOption,faculty:token._id,options:options})
 
+            // now find the subject and add question to the subject
+            await Subject.findByIdAndUpdate(subject,{$push:{QuestionBankMCQ:create._id}})
             return next(handelSucess(res,"sucessfully created question",create))
+            
         }else{
             return next(handelErr(res,"please enter all the details","please enter all the details",404))
         }
@@ -222,6 +227,95 @@ const CreateCodeTest = async(req,res,next)=>{
     }
 }
 
+const GetAllMCQQuestions = async(req,res,next)=>{
+    try{
+        const {subject}=req.params
+        console.log(subject,"hello")
+        if(subject === "All"){
+            const data = await MCQQuestionBank.find()
+            
+            return next(handelSucess(res,"sucessful",data))
+        }else{
+            const data = await MCQQuestionBank.find({subjectCode:subject})
+            console.log(data)
+            return next(handelSucess(res,"sucessful",data))
+        }
+    }catch(err){
+        return next(handelErr(res,err.message.err,404))
+    }
+}
+
+const CreateMCQTest = async (req,res,next)=>{
+    try{
+        // take fculty and data from the uer 
+        const {Faculty} = req.cookies
+        const {TestName,TestDescription,TestStartTime,TestExpireTime,AttemptTime,Questions,Branch,Year,Subject} = req.body
+
+        if(TestName && TestDescription && TestStartTime && TestExpireTime && AttemptTime && Questions && Subject){
+           // now get the token data 
+           const token  =  await getTokenData(Faculty)
+           // find all the student and addto the list who can attempt the test
+           const StudentList = await Students.find()
+           if(Year==="All" && Branch === "All" ){
+                const Student = StudentList.map(student => student._id);
+              
+           const CreatedTest = await MCQtest.create({TestName,TestDescription,TestStartTime,TestExpireTime,AttemptTime,Questions,Faculty:token.faculty_id,StudentList:Student,Subject})
+
+           // now return the code test
+           return next(handelSucess(res,"Sucessfully created the test",CreatedTest,200))
+           }else{
+               if(Year==="All" && Branch != "All"){
+                   
+               StudentList.filter((elem)=>{
+                   if(elem.Branch === Branch ){
+                       return true
+                   }else{
+                       return false
+                   }
+               })
+               
+               const Student = StudentList.map(student => student._id);
+
+               const CreatedTest = await MCQtest.create({TestName,Branch,TestDescription,TestStartTime,TestExpireTime,Subject,AttemptTime,Questions,Faculty:token.faculty_id,StudentList:Student})
+               return next(handelSucess(res,"Sucessfully created the test",CreatedTest,200))    
+           }
+
+               if(Branch === "All" && Year != "All"){
+                   
+               StudentList.filter((elem)=>{
+                   if( elem.Year === Year){
+                       return true
+                   }else{
+                       return false
+                   }
+               })
+               const Student = StudentList.map(student => student._id);
+
+               const CreatedTest = await MCQtest.create({TestName,Subject,Year,TestDescription,TestStartTime,TestExpireTime,AttemptTime,Questions,Faculty:token.faculty_id,StudentList:Student})
+               return next(handelSucess(res,"Sucessfully created the test",CreatedTest,200))
+               }
+               
+               StudentList.filter((elem)=>{
+                   if(elem.Branch === Branch && elem.Year === Year){
+                       return true
+                   }else{
+                       return false
+                   }
+               })
+               const Student = StudentList.map(student => student._id);
+
+               const CreatedTest = await MCQtest.create({TestName,Subject,Year,Branch,TestDescription,TestStartTime,TestExpireTime,AttemptTime,Questions,Faculty:token.faculty_id,StudentList:Student})
+               return next(handelSucess(res,"Sucessfully created the test",CreatedTest,200))
+           }
+        }else{
+            return next(handelErr(res,"Please fill all the details ","Enter all the details",404))
+        }
+
+    }catch(err){
+        return next(handelErr(res,err.message,err,404))
+    }
+}
 
 
-module.exports = {FacultyRegister,CreateCodeTest,GetAllCodeQuestions,CreateCodingQuestion,CreateSubject,GetAllSubjects,CreateMCQQuestions}
+
+module.exports = {FacultyRegister,GetAllMCQQuestions,CreateMCQTest,CreateCodeTest,GetAllCodeQuestions,CreateCodingQuestion,CreateSubject,GetAllSubjects,CreateMCQQuestions}

@@ -66,7 +66,7 @@ function FacultyCreateMCQQuestion() {
         
         const payload = {
             QuestionDescription:data.QuestionDescription,
-            Subject:data.Subject,
+            subject:data.Subject,
             options:[data.Option1,data.Option2,data.Option3,data.Option4],
             CorrectOption:data.CorrectAns
         }
@@ -80,6 +80,7 @@ function FacultyCreateMCQQuestion() {
                 Option4:"",
                 CorrectAns:""})
         }).catch((err)=>{
+          console.log(err)
             toast({title:err.message,description:"err in creation"})
         })
     }

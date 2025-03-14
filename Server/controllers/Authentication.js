@@ -258,7 +258,7 @@ const ResetPasswordEmailVerification = async(req,res,next)=>{
                 return next(handelSucess(res,"Reset Token send sucessful. Change Password with in 2 hours",payload))
             }
         }else{
-            return next(handelErr(res,"please send email",IsEmail,401))
+            return next(handelErr(res,"please send email","Email not found",401))
         }
     }catch(err){
         return next(handelErr(res,err.message,err,404))

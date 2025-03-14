@@ -8,6 +8,7 @@ const CodeTest =  require("../models/CodeTest")
 const Students = require("../models/Students")
 const codeQuestionBank = require("../models/codeQuestionBank")
 const CodeTestResult = require("../models/CodeTestResult")
+const MCQtest = require("../models/MCQtest")
 
 const CodingTestSubmission = async(req,res,next)=>{
     // temperary api 
@@ -278,5 +279,17 @@ const SubmitTest = async(req,res,next)=>{
     }
 }
 
+const GetAllMCQTest = async(req,res,next)=>{
+    try{
+        const data = await MCQtest.find().populate("Faculty")
+        
+        return next(handelSucess(res,"sucessfully fetchted the data",data))
+    }catch(err){
+        return next(handelErr(res,err.message,err,404))
+    }
+}
 
-module.exports = {CodingTestSubmission,SubmitTest,StartCodingTest,handleQuestionCodeSubmitte,GetAllCodingTest,GetQuestion}
+
+
+
+module.exports = {CodingTestSubmission,GetAllMCQTest,SubmitTest,StartCodingTest,handleQuestionCodeSubmitte,GetAllCodingTest,GetQuestion}
