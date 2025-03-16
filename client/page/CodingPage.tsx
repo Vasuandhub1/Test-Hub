@@ -14,10 +14,14 @@ import {debounce} from "../utils/utils"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 
 
+
+
+
 import axios from 'axios'
-import { Input } from '@/components/ui/input'
+import { Badge } from "@/components/ui/badge"
+
 import { Textarea } from '@/components/ui/textarea'
-import { stdin } from 'process'
+
 import { toast } from '@/hooks/use-toast'
 
 //    now handeling the functionb
@@ -25,20 +29,21 @@ function CodingPage({SetDescription,Question}) {
   const source_code=useSelector((state:RootState)=>state.code.code)
 
   const [language,setLanguage]=useState<number>(45)
-  const [output,SetOutput]=useState("")
+  const [output,SetOutput]=useState("No submission yet...")
   const [Input,SetInput]=useState("")
   const [Terminal,SetTerminal] = useState("")
   console.log(language)
 
   const SubmitteSolution = async()=>{
         try{
+          SetOutput("Running Hiddin Test Cases...")
           const data={"language_id":language,
             source_code
           }
           const res = await axios.post("http://localhost:3000/student-test-hub/Student/CodeQuestionSubmission",{data,QuestionId:Question._id},{withCredentials:true})
           console.log(res)
 
-          SetOutput(`${res!.data!.data!.status!.description},${res?.data?.data?.status_id}`)
+          SetOutput(`${res!.data!.data!.status!.description}`)
 
         }catch(err){
           console.log(err)
@@ -98,7 +103,7 @@ function CodingPage({SetDescription,Question}) {
     <TabsTrigger value="Input">Input</TabsTrigger>
   </TabsList>
   <TabsContent value="Terminal" className='p-2'><p className=' text-lg font-mono'> Terminal :{Terminal}</p></TabsContent>
-  <TabsContent value="Output">{output}</TabsContent>
+  <TabsContent value="Output"  className='p-2 text-lg'>{output==="No submission yet..."  || output === "Accepted" || output === "Running Hiddin Test Cases..." ?<div>Output : <Badge variant="secondary" className=' text-lg' >{output}</Badge> </div>:<div className=''>Output :<Badge className=' text-lg' variant="destructive" >{output}</Badge></div>}</TabsContent>
   <TabsContent value="Input" className='p-2'>
     <div >
       <label htmlFor="">

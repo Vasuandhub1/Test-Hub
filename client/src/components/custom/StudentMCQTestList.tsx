@@ -9,7 +9,7 @@ function StudentMCQTestsList() {
 
     const GetCodeTestList = async()=>{
         try{
-        const res = await axios.get("http://localhost:3000/Student-test-hub//Student/MCQTest",{withCredentials:true})
+        const res = await axios.get("http://localhost:3000/Student-test-hub/Student/MCQTest",{withCredentials:true})
         console.log(res.data.data,"data")
         SetList([...res.data.data])
         }
@@ -20,8 +20,8 @@ function StudentMCQTestsList() {
 
     const StartCodingTest = async(TestId:string)=>{
         console.log(TestId)
-        navigate(`/StudentTestStartConfirmation/${TestId}`)
-        "const res = await axios.get(`http://localhost:3000/student-test-hub/CodeTest/${TestId}`,{withCredentials:true})"
+        navigate(`/StdeudentMCQTestStartConfirmation/${TestId}`)
+        const res = await axios.get(`http://localhost:3000/student-test-hub/CodeTest/${TestId}`,{withCredentials:true})
         
     }
 
@@ -38,7 +38,7 @@ function StudentMCQTestsList() {
             MCQ Test List
         </CardTitle>
         <CardDescription>
-            List of All the Coding Tests Organized
+            List of All the MCQ Tests Organized
         </CardDescription>
     </CardHeader>
     <CardContent className='flex  justify-evenly flex-wrap gap-[0.45rem]'>

@@ -9,6 +9,8 @@ const Students = require("../models/Students")
 const codeQuestionBank = require("../models/codeQuestionBank")
 const CodeTestResult = require("../models/CodeTestResult")
 const MCQtest = require("../models/MCQtest")
+const MCQQuestionBank = require("../models/MCQQuestionBank")
+const MCQTestResult = require("../models/MCQTestResult")
 
 const CodingTestSubmission = async(req,res,next)=>{
     // temperary api 
@@ -289,7 +291,120 @@ const GetAllMCQTest = async(req,res,next)=>{
     }
 }
 
+const StartMCQTest = async(req,res,next)=>{
+    try{
+        // so we have to update the both student and test list 
+        // and we havr to create the tokne of test time size 
+        // we have to check if the test is not expired yet
+        // test taking time should be greator than start time and less then end time 
+
+      const {Student} = req.cookies
+      const {Test_id} = req.params
+
+      if(Test_id){
+        const token = await getTokenData(Student)
+        const test = await MCQtest.findById(Test_id)
+
+        // now check for the test timing
+        if(Date.now() < new Date(test.TestExpireTime) && Date.now() >= new Date(test.TestStartTime) ){
+
+            // now check  if the student is present in the test student array
+            if(test.StudentList.includes(token.student_id)){
+
+                // now check if student can attaind the test
+                if(test.AttemptedTestStudentList.includes(token.student_id)){
+                    return next(handelErr(res,"Already Attempted Test","Can not attempt test multiple time",404))
+                }else{
+                    // now start the test for the student  
+                    // create Test Token 
+                    const TestTokenPayload = {
+                        _id:test._id,
+                        TestName:test.TestName
+                    } 
+                    const TestToken = await createToken(TestTokenPayload,"24h")
+
+                    // update the test Attainned list 
+                    await MCQtest.findByIdAndUpdate(test._id,{$push:{AttemptedTestStudentList:token.student_id}})
+                    await Students.findByIdAndUpdate(token.student_id,{$push:{MCQtest:test._id}})
+
+                    // now send the test Start cookie 
+                    res.cookie("MCQTest",TestToken,{expiresIn:new Date( Date().now + 1000*60*60*test.AttemptTime)})
+                    return next(handelSucess(res,"Start test All the best",test))
+                }
+            }else{
+                
+                return next(handelErr(res,"You are not eligeble for the test","Not eliglible ",404))
+            }
+
+            
+        }else{
+            return next(handelErr(res,"date err",Date.now() < new Date(test.TestExpireTime),404))
+        }
+
+
+      }else{
+        return next(handelErr(res,"Did not get the test id","please enter the test_id",404))
+      }
+
+    }catch(err){
+        return next(handelErr(res,err.message,err,404))
+    }
+}
+
+const GetMCQQuestion =async(req,res,next)=>{
+    try{
+        const {QuesId} = req.params
+        const Question = await MCQQuestionBank.findById(QuesId)
+        console.log(Question)
+        return next(handelSucess(res,"Question Sucessful",Question))
+    }catch(err){
+        return next(handelErr(res,err.message,err,404))
+    }
+}
+
+
+const SubmitMCQTestQuestion = async(req,res,next)=>{
+    try{
+        const {Student,MCQTest}=req.cookies
+        const {data}=req.body
+        if(MCQTest && data){
+            const MCQToken = await getTokenData(MCQTest)
+            const StudentToken = await getTokenData(Student)
+
+            // now we have to calculate thje merks 
+            const Question = MCQQuestionBank.findById(data._id)
+
+            // check if the ans id correct 
+            if(data.ans === Question.correctAns){
+                // if the ans ic correct
+                const IsResult = await MCQTestResult.findOne({StudentId:StudentToken.student_id,TestId:MCQToken._id})
+                if(IsResult){
+                    const marks=IsResult.TotalMarksObtained+5;
+                    await MCQTestResult.findByIdAndUpdate(IsResult._id,{TotalMarksObtained:marks})
+                    return next(handelSucess(res,"sucess","Saved sucess"))
+                }else{
+                    await MCQTestResult.create({TotalMarksObtained:5,StudentId:StudentToken.student_id,MCQTest:MCQToken._id})
+                    return next(handelSucess(res,"sucess","Saved sucess"))
+                }
+            }else{
+
+                const IsResult = await MCQTestResult.findOne({StudentId:StudentToken.student_id,TestId:MCQToken._id})
+                if(IsResult){
+                    return next(handelSucess(res,"sucess","Saved sucess"))
+                }else{
+                    await MCQTestResult.create({TotalMarksObtained:5,StudentId:StudentToken.student_id,MCQTest:MCQToken._id})
+                    return next(handelSucess(res,"sucess","Saved sucess"))
+                }
+            }
+        }else{
+            return next(handelErr(res,"Error not got details","token not found",401))
+        }
+    }catch(err){
+        return next(handelErr(res,err.message,err,404))
+    }
+}
 
 
 
-module.exports = {CodingTestSubmission,GetAllMCQTest,SubmitTest,StartCodingTest,handleQuestionCodeSubmitte,GetAllCodingTest,GetQuestion}
+
+module.exports = {CodingTestSubmission,SubmitMCQTestQuestion,GetMCQQuestion,StartMCQTest,GetAllMCQTest,SubmitTest,StartCodingTest,handleQuestionCodeSubmitte,GetAllCodingTest,GetQuestion}

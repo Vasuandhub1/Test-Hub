@@ -13,11 +13,11 @@ import {
   import { useNavigate } from 'react-router-dom'
   import { useSelector,useDispatch } from 'react-redux'
   import axios from 'axios'
-  import { StartTest } from '../../../Redux/slices/CodeTestData'
+  import { StartMCQTest } from '../../../Redux/slices/MCQTestData'
 import { toast } from '@/hooks/use-toast'
 
 
-function TestStartConfirmaition() {
+function StudentMCQTestStartConfirmaition() {
   const params=useParams()
   const [Check,SetCheck] = useState(false)
   const navigate = useNavigate()
@@ -28,17 +28,17 @@ function TestStartConfirmaition() {
   const StartTests = async()=>{
     try{
      if(Check){
-      const res = await axios.get(`http://localhost:3000/student-test-hub/Student/CodeTest/${params.TestId}`,{withCredentials:true})
+      const res = await axios.get(`http://localhost:3000/student-test-hub/Student/MCQTest/${params.TestId}`,{withCredentials:true})
       console.log(res.data.data)
       const payload ={TestId:res.data.data._id,Questions:res.data.data.Questions}
-      dispatch(StartTest(payload))
-      navigate("/Student/CodeingTest")
+      dispatch(StartMCQTest(payload))
+      navigate("/StudentMCQTest")
      }else{
       toast({title:"Please read all the instruction before starting the test"})
      }
     }catch(err){
       toast({title:err?.response?.data?.message , description:err?.response?.data?.data})
-      console.log(err)
+      console.log(err?.response?.data?.message)
     }
   }
 
@@ -47,7 +47,7 @@ function TestStartConfirmaition() {
     <Card className = 'w-[60rem] border-black  dark:border-white'>
         <CardHeader>
             <CardTitle>
-                Start Coding Test
+                Start MCQ Test
             </CardTitle>
             <CardDescription>
                 Please read all the instructions carefully
@@ -86,4 +86,4 @@ function TestStartConfirmaition() {
   )
 }
 
-export default TestStartConfirmaition
+export default StudentMCQTestStartConfirmaition

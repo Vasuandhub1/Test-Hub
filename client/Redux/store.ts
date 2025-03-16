@@ -6,6 +6,7 @@ import Code from "./slices/code"
 import StudentSlice from "./slices/Student"
 import FacultySlice from "./slices/Faculty"
 import CodeTestData from "./slices/CodeTestData"
+import MCQTestData from "./slices/MCQTestData"
 
 // Create the store with the reducer
 export const store = configureStore({
@@ -15,7 +16,8 @@ export const store = configureStore({
     code:Code,
     student:StudentSlice,
     faculty:FacultySlice,
-    CodeTestData:CodeTestData
+    CodeTestData:CodeTestData,
+    MCQTestData:MCQTestData
   },
 });
 

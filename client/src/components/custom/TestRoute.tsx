@@ -4,7 +4,8 @@ import { Outlet,Navigate } from "react-router-dom";
 
 export default function TestRoute (){
     const TestId = useSelector((state:RootState)=>state.CodeTestData.TestId)
+    const MCQTest = useSelector((state:RootState)=>state.MCQTestData.TestId)
     return(<>
-    {TestId!=""?<Outlet></Outlet>:<Navigate to={"/StudentTests"}></Navigate>}
+    {TestId!=""?<Outlet></Outlet>:MCQTest!=""?<Outlet/>:<Navigate to={"/StudentTests"}></Navigate>}
     </>)
 }

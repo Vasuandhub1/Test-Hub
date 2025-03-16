@@ -27,6 +27,8 @@ import StudentDashboard from "./components/custom/StudentDashboard"
 import StudentResults from "./components/custom/StudentResults"
 import { ForgotPasswordEmail } from "./components/custom/ForgotPasswordEmail"
 import { ResetPassword } from "./components/custom/ResetPassword"
+import MCQTest from "../page/MCQTest"
+import StudentMCQTestStartConfirmaition from "./components/custom/StudentMCQTestStartConfirmation"
 
 
 
@@ -45,7 +47,7 @@ export default function Home() {
       <Route path="/FacultyRegister" Component={FacultyRegister}></Route>
       <Route path="/ForgotPasswordEmail" Component={ForgotPasswordEmail}/>
       <Route path="/ResetPassword/:token" Component={ResetPassword}/>
-
+      
       {/* student private route */} 
 
       <Route element={<>
@@ -59,6 +61,8 @@ export default function Home() {
       <Route path="StudentProfile" Component={Profile}/>
       <Route path="/StudentDashboard" Component={StudentDashboard}/>
       <Route path="/StudentResult" Component={StudentResults}/>
+      
+      <Route path="/StdeudentMCQTestStartConfirmation/:TestId" Component={StudentMCQTestStartConfirmaition}></Route>
       <Route path="/StudentTestStartConfirmation/:TestId" Component={TestStartConfirmaition}/>
       
       </Route>
@@ -75,6 +79,7 @@ export default function Home() {
       </Route>
 
       <Route element={<TestRoute/>}>
+      <Route path="/StudentMCQTest" Component={MCQTest}/>
       <Route path="/Student/CodeingTest" Component={CodingTest}/>
       </Route>
       
