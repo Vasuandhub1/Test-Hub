@@ -12,7 +12,7 @@ const testResults = [
 
 const GetAllResults = async()=>{
   try{
-    const res = await axios.get("http://localhost:3000/student-test-hub/StudentResult",{withCredentials:true})
+    const res = await axios.get("http://localhost:3000/student-test-hub/student-test-hub/Student/Results",{withCredentials:true})
     console.log(res)
   }catch(err){
     console.log(err)

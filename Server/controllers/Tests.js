@@ -338,7 +338,7 @@ const StartMCQTest = async(req,res,next)=>{
 
             
         }else{
-            return next(handelErr(res,"date err",Date.now() < new Date(test.TestExpireTime),404))
+            return next(handelErr(res,"Test Expired",Date.now() < new Date(test.TestExpireTime),404))
         }
 
 
@@ -367,9 +367,12 @@ const SubmitMCQTestQuestion = async(req,res,next)=>{
     try{
         const {Student,MCQTest}=req.cookies
         const {data}=req.body
-        if(MCQTest && data){
+        if(MCQTest){
             const MCQToken = await getTokenData(MCQTest)
             const StudentToken = await getTokenData(Student)
+            console.log(MCQToken)
+            console.log(StudentToken)
+            console.log(data,"data")
 
             // now we have to calculate thje merks 
             const Question = MCQQuestionBank.findById(data._id)
@@ -392,7 +395,7 @@ const SubmitMCQTestQuestion = async(req,res,next)=>{
                 if(IsResult){
                     return next(handelSucess(res,"sucess","Saved sucess"))
                 }else{
-                    await MCQTestResult.create({TotalMarksObtained:5,StudentId:StudentToken.student_id,MCQTest:MCQToken._id})
+                    await MCQTestResult.create({TotalMarksObtained:5,TestId:MCQToken._id,StudentId:StudentToken.student_id,MCQTest:MCQToken._id})
                     return next(handelSucess(res,"sucess","Saved sucess"))
                 }
             }

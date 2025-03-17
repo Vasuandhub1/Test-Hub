@@ -18,6 +18,7 @@ route.post("/Student/MCQQuestionSubmission",SubmitMCQTestQuestion)
 route.post("/Student/TestCodeSubmit",SubmitTest)
 route.get("/StudentResult",GetAllCodingTest)
 route.get("/Student/MCQTest",GetAllMCQTest)
+route.get("/Student/Results",GetAllResults)
 
 // now export the route to the 
 module.exports = route
