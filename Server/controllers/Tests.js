@@ -12,47 +12,94 @@ const MCQtest = require("../models/MCQtest")
 const MCQQuestionBank = require("../models/MCQQuestionBank")
 const MCQTestResult = require("../models/MCQTestResult")
 
-const CodingTestSubmission = async(req,res,next)=>{
-    // temperary api 
-    // this controller for testing of the api and frontend
-    try{
-        // now take codeing details from the front end 
-        const {data} = req.body
-        
-        if(data){
-            const token = await axios.post("https://judge0-ce.p.rapidapi.com/submissions?base64_encoded=false&wait=false&fields=*",{language_id:data.language_id,source_code:data.source_code,stdin:data.stdin,expected_output:data.expected_output},{
-            headers:{"Content-Type":"application/json",
-                "x-rapidapi-host":"judge0-ce.p.rapidapi.com",
-                "x-rapidapi-key":"8c9941baf7msh9d764d6f2734fedp1cf310jsnd105a9436dc5"
+
+
+const CodingTestSubmission = async (req, res, next) => {
+    try {
+        const { data } = req.body;
+        if (!data) {
+            return next(handelErr(res, "Please send the data", "Missing request body", 400));
+        }
+
+        // Base64 encoding & decoding helper functions
+        const encodeBase64 = (text) => Buffer.from(text || "").toString("base64");
+        const decodeBase64 = (text) => (text ? Buffer.from(text, "base64").toString("utf-8") : null);
+
+        // Send submission request with Base64-encoded fields
+        const response = await axios.post(
+            "https://judge0-ce.p.rapidapi.com/submissions?base64_encoded=true&wait=false&fields=*",
+            {
+                language_id: data.language_id,
+                source_code: encodeBase64(data.source_code),
+                stdin: encodeBase64(data.stdin),
+                expected_output: data.expected_output ? encodeBase64(data.expected_output) : null,
+            },
+            {
+                headers: {
+                    "Content-Type": "application/json",
+                    "x-rapidapi-host": "judge0-ce.p.rapidapi.com",
+                    "x-rapidapi-key": "8c9941baf7msh9d764d6f2734fedp1cf310jsnd105a9436dc5",
+                },
             }
-        })
-      
+        );
 
-        // now check if we get the token 
-        if(token){
-            
-            setTimeout(async()=>{
-                const result = await axios.get(`https://judge0-ce.p.rapidapi.com/submissions/${token.data.token}?base64_encoded=false&wait=false&fields=*`,{
-                    headers:{"Content-Type":"application/json",
-                        "x-rapidapi-host":"judge0-ce.p.rapidapi.com",
-                        "x-rapidapi-key":"8c9941baf7msh9d764d6f2734fedp1cf310jsnd105a9436dc5"
+        if (!response.data.token) {
+            return next(handelErr(res, "Server error", "Failed to get submission token", 500));
+        }
+
+        const token = response.data.token;
+        let attempts = 0;
+        const maxAttempts = 10; // Prevent infinite loops
+
+        const checkResult = async () => {
+            try {
+                const result = await axios.get(
+                    `https://judge0-ce.p.rapidapi.com/submissions/${token}?base64_encoded=true&fields=*`, // Ensure response is Base64 encoded
+                    {
+                        headers: {
+                            "Content-Type": "application/json",
+                            "x-rapidapi-host": "judge0-ce.p.rapidapi.com",
+                            "x-rapidapi-key": "8c9941baf7msh9d764d6f2734fedp1cf310jsnd105a9436dc5",
+                        },
                     }
-                })
-                
-                return next(handelSucess(res,"compiled sucessful ",result.data,200))
-            },1000)
-            
-        }else{
-            return next(handelErr(res,"server err","server err",400))
-        }
+                );
 
-        }else{
-            return next(handelErr(res,"please send the data","err in sending the data",404))
-        }
-    }catch(err){
-        return next(handelErr(res,err.message,err,404))
+                const statusId = result.data.status.id;
+                console.log(`Status ID: ${statusId}`);
+
+                if (statusId === 1 || statusId === 2) {
+                    if (attempts < maxAttempts) {
+                        attempts++;
+                        setTimeout(checkResult, 1000);
+                    } else {
+                        return next(handelErr(res, "Execution timeout", "Execution took too long", 408));
+                    }
+                } else {
+                    // Decode Base64-encoded response fields
+                    const decodedResult = {
+                        ...result.data,
+                        stdout: decodeBase64(result.data.stdout),
+                        stderr: decodeBase64(result.data.stderr),
+                        compile_output: decodeBase64(result.data.compile_output),
+                        message: decodeBase64(result.data.message),
+                    };
+
+                    return next(handelSucess(res, "Compiled successfully", decodedResult, 200));
+                }
+            } catch (error) {
+                console.log(error);
+                return next(handelErr(res, error.message, error, 500));
+            }
+        };
+
+        checkResult();
+    } catch (err) {
+        return next(handelErr(res, err.message, err, 500));
     }
-}
+};
+
+
+
 
 const StartCodingTest  = async (req,res,next)=>{
     try{
@@ -146,112 +193,159 @@ const EndTest = async(req,res,next)=>{
     }
 }
 
-const handleQuestionCodeSubmitte = async(req,res,next)=>{
-    try{
-        //  now take the question id ,student id and test id from the req body 
+const handleQuestionCodeSubmitte = async (req, res, next) => {
+    try {
+        // Extract tokens from cookies
+        const { Student, CodingTest } = req.cookies;
+        const { data, QuestionId } = req.body;
 
-        const {Student,CodingTest}=req.cookies
-        const {data,QuestionId}=req.body
+        // Check if we received both tokens
+        if (Student && CodingTest) {
+            // Decode the tokens
+            const StudentToken = await getTokenData(Student);
+            const TestToken = await getTokenData(CodingTest);
 
-        // cehck if we get both the token 
-        if(Student,CodingTest){
-            // now decode the tokens 
-            const StudentToken = await getTokenData(Student)
-            const TestToken = await getTokenData(CodingTest)
-            if(data && QuestionId){
-                console.log(data?.language_id)
-                console.log(data?.source_code)
-                console.log(data?.stdin)
-                console.log(data?.expected_output)
-                const Question = await codeQuestionBank.findById(QuestionId)
-                console.log(Question)
-                // now we have to submitte the code and check if the answer is correct or not
-                const token = await axios.post("https://judge0-ce.p.rapidapi.com/submissions?base64_encoded=false&wait=false&fields=*",{language_id:data.language_id,source_code:data.source_code,stdin:Question.HiddenTestCaseInput,expected_output:Question.HiddenTestCaseOutput},{
-                    headers:{"Content-Type":"application/json",
-                        "x-rapidapi-host":"judge0-ce.p.rapidapi.com",
-                        "x-rapidapi-key":"8c9941baf7msh9d764d6f2734fedp1cf310jsnd105a9436dc5"
+            if (data && QuestionId) {
+                console.log(data?.language_id);
+                console.log(data?.source_code);
+                console.log(data?.stdin);
+                console.log(data?.expected_output);
+
+                // Fetch the question details
+                const Question = await codeQuestionBank.findById(QuestionId);
+                console.log(Question);
+
+                // Function to convert input to Base64
+                const encodeBase64 = (text) => Buffer.from(text || "").toString("base64");
+                const decodeBase64 = (text) => (text ? Buffer.from(text, "base64").toString("utf-8") : null);
+
+                // Submit code for execution
+                const tokenResponse = await axios.post(
+                    "https://judge0-ce.p.rapidapi.com/submissions?base64_encoded=true&wait=false&fields=*",
+                    {
+                        language_id: data.language_id,
+                        source_code: encodeBase64(data.source_code),
+                        stdin: encodeBase64(Question.HiddenTestCaseInput),
+                        expected_output: encodeBase64(Question.HiddenTestCaseOutput),
+                    },
+                    {
+                        headers: {
+                            "Content-Type": "application/json",
+                            "x-rapidapi-host": "judge0-ce.p.rapidapi.com",
+                            "x-rapidapi-key": "8c9941baf7msh9d764d6f2734fedp1cf310jsnd105a9436dc5",
+                        },
                     }
-                })
+                );
 
-                // so if we get the token
-                if(token){
-                    // now get the compiled solution 
-                    setTimeout(async()=>{
-                        const result = await axios.get(`https://judge0-ce.p.rapidapi.com/submissions/${token.data.token}?base64_encoded=false&wait=false&fields=*`,{
-                            headers:{"Content-Type":"application/json",
-                                "x-rapidapi-host":"judge0-ce.p.rapidapi.com",
-                                "x-rapidapi-key":"8c9941baf7msh9d764d6f2734fedp1cf310jsnd105a9436dc5"
-                            }
-                        })
-                        console.log(result.data)
-                        if(result){
-                            // now check if the solution is correct update the students test marks by checking if the solution is presubmitted or not 
-                            // if it is the first submission (check if the codetestResult exist for the student test)
-                            if(result?.data?.status?.id === 3){
-                            const IsTest = await CodeTestResult.findOne({StudentId:StudentToken.student_id,TestId:TestToken._id})
-                            
-                            if(IsTest){
-                                // check of the student already submitted for the same question 
-                                if(!IsTest.QuestionId.includes(QuestionId)){
-                                    let marks=0
-                                    if(Question.DifficultyLevel==="Easy"){
-                                        marks=IsTest.TotalMarksObtained+5
-                                    }else if(Question.DifficultyLevel==="Medium"){
-                                        marks=IsTest.TotalMarksObtained+10
-                                    }else{
-                                        marks=IsTest.TotalMarksObtained+15
-                                    }
-                                    // now update the test
-                                    await CodeTestResult.findByIdAndUpdate(
-                                        IsTest._id,
-                                        {
-                                          TotalMarksObtained: marks, 
-                                          $push: { QuestionId: QuestionId } // Ensure QuestionId is a valid value
-                                        },
-                                        { new: true } // To return the updated document
-                                      );
-                                      
-                                    return next(handelSucess(res,"Submitted sucessful",result.data))
-                                }else{
-                                    return next(handelSucess(res,"Submitted sucessful",result.data))
+                // Check if token is received
+                if (tokenResponse.data.token) {
+                    const token = tokenResponse.data.token;
+                    let attempts = 0;
+                    const maxAttempts = 10; // Prevent infinite loops
+
+                    const checkResult = async () => {
+                        try {
+                            const result = await axios.get(
+                                `https://judge0-ce.p.rapidapi.com/submissions/${token}?base64_encoded=true&fields=*`,
+                                {
+                                    headers: {
+                                        "Content-Type": "application/json",
+                                        "x-rapidapi-host": "judge0-ce.p.rapidapi.com",
+                                        "x-rapidapi-key": "8c9941baf7msh9d764d6f2734fedp1cf310jsnd105a9436dc5",
+                                    },
                                 }
-                            }else{
-                                // now create the first submission and add the merks
-                                let marks=0
-                                    if(Question.DifficultyLevel==="Easy"){
-                                        marks=5
-                                    }else if(Question.DifficultyLevel==="Medium"){
-                                        marks=10
-                                    }else{
-                                        marks=15
+                            );
+
+                            console.log(result.data);
+
+                            const statusId = result.data.status.id;
+                            if (statusId === 1 || statusId === 2) {
+                                if (attempts < maxAttempts) {
+                                    attempts++;
+                                    setTimeout(checkResult, 1000);
+                                } else {
+                                    return next(handelErr(res, "Execution timeout", "Execution took too long", 408));
+                                }
+                            } else {
+                                // Decode response fields
+                                const decodedResult = {
+                                    ...result.data,
+                                    stdout: decodeBase64(result.data.stdout),
+                                    stderr: decodeBase64(result.data.stderr),
+                                    compile_output: decodeBase64(result.data.compile_output),
+                                    message: decodeBase64(result.data.message),
+                                };
+
+                                // Check if submission is correct
+                                if (decodedResult.status.id === 3) {
+                                    const IsTest = await CodeTestResult.findOne({
+                                        StudentId: StudentToken.student_id,
+                                        TestId: TestToken._id,
+                                    });
+
+                                    if (IsTest) {
+                                        // Check if student already submitted this question
+                                        if (!IsTest.QuestionId.includes(QuestionId)) {
+                                            let marks = 0;
+                                            if (Question.DifficultyLevel === "Easy") marks = Number(IsTest.TotalMarksObtained) + 5;
+                                            else if (Question.DifficultyLevel === "Medium") marks = Number(IsTest.TotalMarksObtained) + 10;
+                                            else marks = Number(IsTest.TotalMarksObtained) + 15;
+
+                                            // Update test result
+                                            await CodeTestResult.findByIdAndUpdate(
+                                                IsTest._id,
+                                                {
+                                                    TotalMarksObtained: marks,
+                                                    $push: { QuestionId: QuestionId },
+                                                },
+                                                { new: true }
+                                            );
+
+                                            return next(handelSucess(res, "Submitted successfully", decodedResult));
+                                        } else {
+                                            return next(handelSucess(res, "Already submitted this question", decodedResult));
+                                        }
+                                    } else {
+                                        // First submission, create a test record
+                                        let marks = 0;
+                                        if (Question.DifficultyLevel === "Easy") marks = 5;
+                                        else if (Question.DifficultyLevel === "Medium") marks = 10;
+                                        else marks = 15;
+
+                                        await CodeTestResult.create({
+                                            TestId: TestToken._id,
+                                            QuestionId: [QuestionId],
+                                            TotalMarksObtained: marks,
+                                            StudentId: StudentToken.student_id,
+                                        });
+
+                                        return next(handelSucess(res, "Submitted successfully", decodedResult));
                                     }
-                                    await CodeTestResult.create({TestId:TestToken._id, QuestionId:[QuestionId],TotalMarksObtained:marks,StudentId:StudentToken.student_id})
-
-                                    return next(handelSucess(res,"Submitted sucessful",result.data))
+                                } else {
+                                    return next(handelSucess(res, "Wrong answer", decodedResult));
+                                }
                             }
-
-                        }else{
-                            return next(handelSucess(res,"Wrong ans",result.data))
+                        } catch (error) {
+                            console.log(error);
+                            return next(handelErr(res, error.message, error, 500));
                         }
-                    }else{
-                        return next(handelErr(res,"Try again","please try agaain",400))
-                    }
-                    },1000)
+                    };
 
-                }else{
-                    return next(handelErr(res,"Code compiler server err","code server err",404))
+                    checkResult();
+                } else {
+                    return next(handelErr(res, "Code compiler server error", "Code execution server error", 500));
                 }
-
-            }else{
-                return next(handelErr(res,"code data not found","Code data err || questionId",404))
+            } else {
+                return next(handelErr(res, "Code data or QuestionId not found", "Missing required parameters", 400));
             }
-        }else{
-            return next(handelErr(res,"did not found cookies","Err",401))
+        } else {
+            return next(handelErr(res, "Authentication tokens not found in cookies", "Unauthorized", 401));
         }
-    }catch(err){
-        return next(handelErr(res,err.message,err,404))
+    } catch (err) {
+        return next(handelErr(res, err.message, err, 500));
     }
-}
+};
+
 
 const SubmitTest = async(req,res,next)=>{
     try{
@@ -407,6 +501,51 @@ const SubmitMCQTestQuestion = async(req,res,next)=>{
     }
 }
 
+
+// run code the 
+const RunCode = async(data,QuestionId)=>{
+    if(data && QuestionId){
+        console.log(data?.language_id)
+        console.log(data?.source_code)
+        console.log(data?.stdin)
+        console.log(data?.expected_output)
+        const Question = await codeQuestionBank.findById(QuestionId)
+        console.log(Question)
+        // now we have to submitte the code and check if the answer is correct or not
+        const token = await axios.post("https://judge0-ce.p.rapidapi.com/submissions?base64_encoded=false&wait=false&fields=*",{language_id:data.language_id,source_code:data.source_code,stdin:Question.HiddenTestCaseInput,expected_output:Question.HiddenTestCaseOutput},{
+            headers:{"Content-Type":"application/json",
+                "x-rapidapi-host":"judge0-ce.p.rapidapi.com",
+                "x-rapidapi-key":"8c9941baf7msh9d764d6f2734fedp1cf310jsnd105a9436dc5"
+            }
+        })
+
+        // so if we get the token
+        if(token){
+            // now get the compiled solution 
+            const interval = setInterval(async()=>{
+                const result = await axios.get(`https://judge0-ce.p.rapidapi.com/submissions/${token.data.token}?base64_encoded=false&wait=false&fields=*`,{
+                    headers:{"Content-Type":"application/json",
+                        "x-rapidapi-host":"judge0-ce.p.rapidapi.com",
+                        "x-rapidapi-key":"8c9941baf7msh9d764d6f2734fedp1cf310jsnd105a9436dc5"
+                    }
+                }) 
+                // check if get the ans 
+                if(result.data.status.id != 2){
+                    clearInterval(interval)
+                }else{
+                    return
+                }
+               
+            },1000)
+
+        }else{
+            return next(handelErr(res,"Code compiler server err","code server err",404))
+        }
+
+    }else{
+        return next(handelErr(res,"code data not found","Code data err || questionId",404))
+    }
+}
 
 
 

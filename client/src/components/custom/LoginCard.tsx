@@ -73,7 +73,7 @@ export function LoginCard() {
         toast({ title: "Validation Error", description: err.errors.join(", ") });
       } else {
         console.log(err.response.data.message)
-        toast({ title: "Error", description: err?.response?.data?.message });
+        toast({title:err?.response?.data?.message , description:err?.response?.data?.data})
       }
     }
     setSubmitting(false);

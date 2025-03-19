@@ -17,7 +17,7 @@ function StudentRegister() {
     const student = useSelector((state:RootState)=>state.student.name)
     console.log(student)
     const [submitting, setSubmitting] = useState(false);
-    const [data, setData] = useState({ Name: "", Enroll: "",Year:"",Section:"",Branch:"",Gender:"",DOB:""});
+    const [data, setData] = useState({ Name: "", Enroll: "",Year:"",Section:"",Branch:"",Gender:"Male",DOB:""});
 
     const handelRegister = async()=>{
         setSubmitting(true)
@@ -40,7 +40,7 @@ function StudentRegister() {
         },3000)
      }).catch((err)=>{
         console.log(err)
-        toast({title:"err",description:err.message})
+        toast({title:err?.response?.data?.message , description:err?.response?.data?.data})
         setSubmitting(false)
      })
      console.log("hello")

@@ -98,7 +98,7 @@ function FacultyCreateCodingTest() {
 
   }catch(err){
     console.log(err)
-    return toast({title:"Error",description:err.message})
+    return toast({title:err?.response?.data?.message , description:err?.response?.data?.data})
   }
   }
 

@@ -47,7 +47,8 @@ export function RegisterCard() {
       if (err instanceof yup.ValidationError) {
         toast({ title: "Validation Error", description: err.errors.join(", ") });
       } else {
-        toast({ title: "Error", description: "Please check your credentials" });
+        toast({title:err?.response?.data?.message , description:err?.response?.data?.data})
+        
       }
     }
     setSubmitting(false);

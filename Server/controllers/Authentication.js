@@ -223,7 +223,7 @@ const loginUser= async(req,res,next)=>{
                 }
             }else{
                 // if the uer is not present 
-                return next(handelErr(res,"please register first","user not registerd",404))
+                return next(handelErr(res,"please register first or check credentials","user not registerd or Wrong Credentials",404))
             }
         }else{
             return next(handelErr(res,"please provide all  the credentials","provide all the credentials",404))

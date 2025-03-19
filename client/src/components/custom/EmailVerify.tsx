@@ -58,7 +58,7 @@ const params=useParams()
     })
     navigate("/")
     }).catch((err)=>{
-      toast({title:"Token do not found", description:err.message})
+      toast({title:err?.response?.data?.message , description:err?.response?.data?.data})
     })
     
   }

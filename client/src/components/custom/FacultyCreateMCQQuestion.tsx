@@ -81,7 +81,7 @@ function FacultyCreateMCQQuestion() {
                 CorrectAns:""})
         }).catch((err)=>{
           console.log(err)
-            toast({title:err.message,description:"err in creation"})
+           toast({title:err?.response?.data?.message , description:err?.response?.data?.data})
         })
     }
 

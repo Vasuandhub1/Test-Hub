@@ -15,6 +15,7 @@ function StudentMCQTestsList() {
         }
         catch(err){
             console.log(err)
+            
         }
     }
 

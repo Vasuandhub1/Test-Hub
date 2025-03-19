@@ -7,6 +7,7 @@ import {toggleDarkMode} from "../../../Redux/slices/DarkLight"
 import { motion } from "framer-motion";
 import axios from 'axios';
 import { setFaculty } from "../../../Redux/slices/Faculty";
+import { Label } from 'recharts';
 
 
 function FacultyRegister() {
@@ -17,7 +18,7 @@ function FacultyRegister() {
     const student = useSelector((state:RootState)=>state.student.name)
     console.log(student)
     const [submitting, setSubmitting] = useState(false);
-    const [data, setData] = useState({ Name: "", Enroll: "",Year:"",Branch:"",Gender:"",DOB:""});
+    const [data, setData] = useState({ Name: "", Enroll: "",Year:"",Branch:"",Gender:"Male",DOB:""});
 
     const handelRegister = async()=>{
         setSubmitting(true)
@@ -39,7 +40,7 @@ function FacultyRegister() {
         },3000)
      }).catch((err)=>{
         console.log(err)
-        toast({title:"err",description:err.message})
+        toast({title:err?.response?.data?.message , description:err?.response?.data?.data})
         setSubmitting(false)
      })
      console.log("hello")
@@ -70,14 +71,21 @@ function FacultyRegister() {
           <div className="mt-6">
             <input type="text" name="Name" required onChange={handleChange} value={data.Name} placeholder="Faculty Name" className="w-full px-4 py-3 mb-3 border rounded-lg dark:bg-black dark:text-white" />
             <input type="text" name="Enroll" required onChange={handleChange} value={data.Enroll} placeholder="Faculty Enroll No." className="w-full px-4 py-3 mb-3 border rounded-lg dark:bg-black dark:text-white" />
+            <Label>
+              Joining Date 
+            </Label>
             <input type="Date" name="Year" required onChange={handleChange} value={data.Year} placeholder="Joining Date" className="w-full px-4 py-3 mb-3 border rounded-lg dark:bg-zinc-800 dark:text-white" />
            
             <input type="text" name="Branch" required onChange={handleChange} value={data.Branch} placeholder="Branch" className="w-full px-4 py-3 mb-3 border rounded-lg dark:bg-black dark:text-white" />
-            <select name='Gender'  required onChange={handleChange}  className="w-full px-4 py-3 mb-3 border rounded-lg dark:bg-black dark:text-white">
+            <select name='Gender'    required onChange={handleChange}  className="w-full px-4 py-3 mb-3 border rounded-lg dark:bg-black dark:text-white">
                 <option value="Male">Male</option>
                 <option value="Female">Female</option>
                 <option value="Other">Other</option>
             </select>
+
+            <Label>
+              Date Of Birth
+            </Label>
             <input type="date" name="DOB" required onChange={handleChange} value={data.DOB} placeholder="Date of birth" className="w-full px-4 py-3 mb-3 border rounded-lg dark:bg-zinc-800 dark:text-white" />
            
             <motion.button type="button" className="w-full px-4 py-3 rounded-xl bg-blue-600 dark:bg-blue-500 text-white" onClick={handelRegister}  disabled={submitting}>
