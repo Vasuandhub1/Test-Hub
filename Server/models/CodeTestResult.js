@@ -4,7 +4,7 @@ const mongoose = require("mongoose")
 const CodeTestResult = new mongoose.Schema({
     StudentId:{
         type:mongoose.Schema.Types.ObjectId,
-        ref:"Student"
+        ref:"students"
     },
     TotalMarks:{
         type:Number,

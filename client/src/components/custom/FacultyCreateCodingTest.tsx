@@ -151,7 +151,7 @@ function FacultyCreateCodingTest() {
  
   return (
     <div>
-      <Card className='w-[50rem] border-black dark:border-white'>
+      <Card className='w-[70rem] border-black dark:border-white'>
   <CardHeader>
     <CardTitle>Crete Coding Test</CardTitle>
     <CardDescription>Create Coding test (please fill all the details ) </CardDescription>

@@ -65,7 +65,7 @@ function FacultyCreateMCQTest() {
   const [Data,Setdata] = useState<datainter>({TestName:"",
     TestDescription:"",
     AttemptDate:0,
-    subject:"",
+    subject:"All",
     Branch:"",
     Year:"" 
   }
@@ -130,7 +130,7 @@ function FacultyCreateMCQTest() {
   }
   console.log(SelectedQuestions,"selected")
 
-  const GetAllQuestions = async(value)=>{
+  const GetAllQuestions = async(value="All")=>{
     const res = await axios.get(`http://localhost:3000/Faculty-test-hub//Faculty/GetMCQquestion/${value}`,{withCredentials:true})
     
     if(!SelectedQuestions){
@@ -156,12 +156,13 @@ function FacultyCreateMCQTest() {
   useEffect(()=>{
     
     GetAllSubjects()
-  },[Page])
+    GetAllQuestions()
+},[Page])
   console.log(Data)
  
   return (
     <div>
-      <Card className='w-[50rem] border-black dark:border-white'>
+      <Card className='w-[70rem] border-black dark:border-white'>
   <CardHeader>
     <CardTitle>Crete MCQ Test</CardTitle>
     <CardDescription>Create MCQ test (please fill all the details ) </CardDescription>

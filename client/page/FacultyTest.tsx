@@ -9,8 +9,9 @@ function FacultyTest() {
   return (
     <div className='flex justify-center '>
       <Tabs defaultValue="All Tests" >
+      <h1 className=' font-bold text-2xl text-center  dark:text-white text-black'>Tests</h1>
   <TabsList className='w-full'>
-    <TabsTrigger className='w-full' value="All Tests">All Tests</TabsTrigger>
+    <TabsTrigger className='w-full' value="All Tests">All Created Tests</TabsTrigger>
     <TabsTrigger className='w-full' value="Create Coding Test">Create Coding Test</TabsTrigger>
     <TabsTrigger className='w-full' value="Create MCQ Test">Create MCQ Test</TabsTrigger>
   </TabsList>

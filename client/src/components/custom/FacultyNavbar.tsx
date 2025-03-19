@@ -6,11 +6,13 @@ import { RootState } from "@reduxjs/toolkit/query";
 import { Button } from "../ui/button";
 import { setFaculty } from "../../../Redux/slices/Faculty";
 import { toast } from "@/hooks/use-toast";
-
+import { Sun,Moon } from "lucide-react";
+import { toggleDarkMode } from "../../../Redux/slices/DarkLight";
 
 
 
 export default function FacultyNavbar() {
+  const isDarkMode=useSelector((state:RootState)=>state.DarkLight.isDarkMode)
   const dispatch  = useDispatch()
     const [activeTab, setActiveTab] = useState("Home");
     const navRef = useRef(null);
@@ -41,11 +43,18 @@ export default function FacultyNavbar() {
               }
             dispatch(setFaculty(payload))
     }
+    useEffect(() => {
+      document.documentElement.classList.toggle("dark", isDarkMode);
+      localStorage.setItem("theme", isDarkMode ? "dark" : "light");
+    }, [isDarkMode]);
   
     return (
       <nav className="relative bg-zinc-300 flex justify-evenly text-black dark:bg-zinc-800 dark: p-4 shadow-lg">
         <div className="container mx-auto flex items-center justify-between">
           <div className="text-black dark:text-white text-lg font-bold">Test-Hub</div>
+           <Button  onClick={() => dispatch(toggleDarkMode())}>
+                    {isDarkMode ? <Sun /> : <Moon />}
+                  </Button>
           <ul ref={navRef} className="relative flex space-x-6 dark:text-white text-black">
             <motion.div
               ref={selectorRef}

@@ -9,6 +9,9 @@ const CodeTest =  require("../models/CodeTest")
 const Students = require("../models/Students")
 const MCQtest = require("../models/MCQtest")
 const MCQQuestionBank = require("../models/MCQQuestionBank")
+const CodeTestResult = require("../models/CodeTestResult")
+const MCQTestResult = require("../models/MCQTestResult")
+
 
 
 // now carete the function to regaiter the faculty
@@ -316,6 +319,62 @@ const CreateMCQTest = async (req,res,next)=>{
     }
 }
 
+const GetAllCreatedTest = async(req,res,next)=>{
+    try{
+        const {Faculty} = req.cookies
+        if(Faculty){
+
+            const token = await getTokenData(Faculty)
+            // get all the tests created by the faculty
+            const CodeTests = await CodeTest.find({Faculty:token.faculty_id})
+            const MCQTest = await MCQtest.find({Faculty:token.faculty_id})
+            console.log(CodeTest)
+
+            // now send all the tests to the faculty
+            const payload  = {
+                MCQtest:MCQTest,
+                CodeTests:CodeTests
+            }
+
+            return next(handelSucess(res,"sucessful",payload))
+            
+        }else{
+            return next(handelErr(res,"Faculty not found","Token err",401))
+        }
+    }catch(err){
+        return next(handelErr(res,err.message,err,404))
+    }
+}
+const GetTestResult  = async(req,res,next)=>{
+    try{
+        const {Faculty} = req.cookies
+        const{data} = req.body
+
+        console.log(data)
+
+        if(Faculty){
+
+            const Token = await getTokenData(Faculty)
+
+            if(data.type === "MCQ"){
+
+                const datas = await MCQTestResult.find({TestId:data.TestId}).populate("StudentId",["StudentName"])
+
+                return next(handelSucess(res,"Sucesful",datas))
+            }else{
+                const datas = await CodeTestResult.find({TestId:data.TestId}).populate("TestId",["TestStartTime","TestName","TestType"]).populate("StudentId",["Sname"])
+
+                return next(handelSucess(res,"Sucesful",datas))
+
+            }
+        }else{
+            return next(handelErr(res,"Credentials Err","Credentials Not found",401))
+        }
+    }catch(err){
+        console.log(err)
+        return next(handelErr(res,err.message,err,404))
+    }
+}
 
 
-module.exports = {FacultyRegister,GetAllMCQQuestions,CreateMCQTest,CreateCodeTest,GetAllCodeQuestions,CreateCodingQuestion,CreateSubject,GetAllSubjects,CreateMCQQuestions}
+module.exports = { GetAllCreatedTest, GetTestResult,FacultyRegister,GetAllMCQQuestions,CreateMCQTest,CreateCodeTest,GetAllCodeQuestions,CreateCodingQuestion,CreateSubject,GetAllSubjects,CreateMCQQuestions}

@@ -12,8 +12,8 @@ function StudentTest() {
         Tests
   <TabsList className='w-full '>
     
-    <TabsTrigger className='w-full' value="Coding Tests">Create Coding Test</TabsTrigger>
-    <TabsTrigger className='w-full' value="MCQ Tests">Create MCQ Test</TabsTrigger>
+    <TabsTrigger className='w-full' value="Coding Tests"> Coding Test</TabsTrigger>
+    <TabsTrigger className='w-full' value="MCQ Tests"> MCQ Test</TabsTrigger>
   </TabsList>
   <TabsContent value="Coding Tests"><StudentCodingTestsList/></TabsContent>
   

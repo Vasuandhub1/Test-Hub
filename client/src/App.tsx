@@ -29,7 +29,7 @@ import { ForgotPasswordEmail } from "./components/custom/ForgotPasswordEmail"
 import { ResetPassword } from "./components/custom/ResetPassword"
 import MCQTest from "../page/MCQTest"
 import StudentMCQTestStartConfirmaition from "./components/custom/StudentMCQTestStartConfirmation"
-
+import FacultyResult from "./components/custom/FacultyResult"
 
 
 export default function Home() {
@@ -77,6 +77,7 @@ export default function Home() {
         <Route  path="/FacultyCodeCompiler" Component={StudentCodeCompiler}/>
         <Route path="/FacultyProfile" Component={Profile}/>
         <Route path="/FacultyTest" Component={FacultyTest}/>
+        <Route path="/FacultyResult/:type/:TestId" Component={FacultyResult}/>
       </Route>
 
       <Route element={<TestRoute/>}>

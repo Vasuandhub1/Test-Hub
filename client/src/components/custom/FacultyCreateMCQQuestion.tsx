@@ -90,7 +90,7 @@ function FacultyCreateMCQQuestion() {
     },[])
     console.log(data)
   return (
-    <Card className='w-[50rem] border-black dark:border-white'>
+    <Card className='w-[70rem] border-black dark:border-white'>
     <CardHeader>
       <CardTitle>Create MCQ Question</CardTitle>
       <CardDescription>This (Multiple choise Question) question will be added to the MCQ Question Bank </CardDescription>

@@ -112,7 +112,7 @@ function FacultyCreateCodingQuestion() {
         }
 
   return (
-<Card className='w-[50rem] border-black dark:border-white'>
+<Card className='w-[70rem] border-black dark:border-white'>
   <CardHeader>
     <CardTitle>Create Coding Question</CardTitle>
     <CardDescription>This Coding question will be added to the Coding Question Back </CardDescription>
