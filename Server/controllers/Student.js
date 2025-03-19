@@ -3,6 +3,8 @@ const {handelErr, handelSucess}=require("../utils/errHandler")
 const User = require("../models/User")
 const {createToken, getTokenData}=require("../utils/createToken")
 const CodeTestResult = require("../models/CodeTestResult")
+const Students = require("../models/Students")
+const mongoose = require("mongoose")
 
 
 const StudentRegister = async(req,res,next)=>{
@@ -68,7 +70,7 @@ const GetAllResults = async(req,res,next)=>{
             const Token = await getTokenData(Student)
 
             // now get all the test of the students 
-            const results = await CodeTestResult.find({StudentId:Token.student_id})
+            const results = await CodeTestResult.find({StudentId:Token.student_id}).populate("TestId",["TestStartTime","TestName","TestType"])
 
             return next(handelSucess(res,"Sucessful",results))
         }else{
@@ -80,4 +82,47 @@ const GetAllResults = async(req,res,next)=>{
 
 }
 
-module.exports={StudentRegister,GetAllResults}
+const GetDashboardData=async(req,res,next)=>{
+    try{
+        const {Student} = req.cookies
+
+        if(Student){
+            const token = await getTokenData(Student)
+           
+            
+
+            const data = await CodeTestResult.aggregate([
+                {
+                  $match: {
+                    StudentId: new mongoose.Types.ObjectId(token.student_id) 
+                  }
+                },
+                {
+                  $group: {
+                    _id: "$StudentId",
+                    AverageTotalMarks: { $avg: "$TotalMarks" },
+                    AverageObtainedMarks: {
+                      $avg: "$TotalMarksObtained"
+                    },
+                    MaxMarks: { $max: "$TotalMarksObtained" },
+                    TotalTest: { $sum: 1 }
+                  }
+                }
+              ])
+              
+
+              if(data){
+                return next(handelSucess(res,"sucessful",data))
+              }else{
+                return next(handelErr(res,"Err data not found","error",402))
+              }
+
+        }else{
+            handelErr(res,"Student not found","Credentials Not found",401)
+        }
+    }catch(err){
+        return  handelErr(res,err.message,err,404)
+    }
+}
+
+module.exports={StudentRegister,GetAllResults,GetDashboardData}

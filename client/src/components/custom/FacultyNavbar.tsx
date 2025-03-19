@@ -53,10 +53,9 @@ export default function FacultyNavbar() {
             />
             {[
               { name: "Home", path: "/FacultyHome" },
-              { name: "Dashboard", path: "/dashboard" },
               { name: "Tests", path: "/FacultyTest" },
               { name: "Create Questions", path: "/CreateQuestion" },
-              { name: "Profile", path: "/Profile" },
+              { name: "Profile", path: "/FacultyProfile" },
               { name: "Code Compiler", path: "/FacultyCodeCompiler"},
             ].map((item) => (
               <li key={item.name}>

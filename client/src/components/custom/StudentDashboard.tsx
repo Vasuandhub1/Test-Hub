@@ -1,10 +1,9 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { useEffect, useState } from "react";
 import { BarChart, Bar, XAxis, YAxis, Tooltip, LineChart, Line, ResponsiveContainer } from "recharts";
+import axios from "axios";
 
-const testPerformanceData = [
-  { testType: "MCQ Test", marks: 80 },
-  { testType: "Coding Test", marks: 90 },
-];
+
 
 const performanceTrendMCQ = [
   { date: "Jan", score: 70 },
@@ -21,6 +20,27 @@ const performanceTrendCoding = [
 ];
 
 export default function StudentDashboard() {
+  const [Data,SetData] = useState()
+  const GetAllResults = async()=>{
+ 
+    try{
+      const res = await axios.get("http://localhost:3000/student-test-hub/StudentDashboard",{withCredentials:true})
+      console.log(res,"dashboard")
+      SetData(res?.data?.data[0])
+      
+    }catch(err){
+      console.log(err)
+    }
+  } 
+  console.log(Data)
+
+  const testPerformanceData = [
+    { testType: "MCQ Test", marks: 80 },
+    { testType: "Coding Test", marks: (Data?.AverageObtainedMarks/Data?.AverageTotalMarks )*100 },
+  ];
+  useEffect(()=>{
+    GetAllResults()
+  },[])
   return (
     <div className="p-6 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
       {/* Performance Summary Cards */}
@@ -28,19 +48,19 @@ export default function StudentDashboard() {
         <CardHeader>
           <CardTitle>Total Tests Taken</CardTitle>
         </CardHeader>
-        <CardContent className="text-2xl font-bold">15</CardContent>
+        <CardContent className="text-2xl font-bold">{Data?.TotalTest}</CardContent>
       </Card>
       <Card>
         <CardHeader>
           <CardTitle>Average Score</CardTitle>
         </CardHeader>
-        <CardContent className="text-2xl font-bold">85%</CardContent>
+        <CardContent className="text-2xl font-bold">{(Data?.AverageObtainedMarks/Data?.AverageTotalMarks )*100}%</CardContent>
       </Card>
       <Card>
         <CardHeader>
           <CardTitle>Best Performance</CardTitle>
         </CardHeader>
-        <CardContent className="text-2xl font-bold">90% (Coding Test)</CardContent>
+        <CardContent className="text-2xl font-bold">{Data?.MaxMarks/Data?.AverageTotalMarks*100} (Coding Test Marks)</CardContent>
       </Card>
 
       {/* Bar Chart: Marks per Test Type */}

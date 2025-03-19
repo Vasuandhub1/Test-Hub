@@ -7,12 +7,12 @@ const CodeTestResult = new mongoose.Schema({
         ref:"Student"
     },
     TotalMarks:{
-        type:String,
+        type:Number,
         required:true,
         default:100
     },
     TotalMarksObtained:{
-        type:String,
+        type:Number,
         required:true
     },
     QuestionId:{

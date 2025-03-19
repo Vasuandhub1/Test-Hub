@@ -75,6 +75,7 @@ export default function Home() {
         <Route path="/FacultyHome" Component={FacultyHome}></Route>
         <Route path="/CreateQuestion" Component={CreateQuestions}></Route>
         <Route  path="/FacultyCodeCompiler" Component={StudentCodeCompiler}/>
+        <Route path="/FacultyProfile" Component={Profile}/>
         <Route path="/FacultyTest" Component={FacultyTest}/>
       </Route>
 
