@@ -1,5 +1,5 @@
 # importing the node image v22
-FROM  node:22
+FROM  node:22-alpine
 
 # change the working directory
 WORKDIR /app
@@ -14,7 +14,4 @@ COPY . .
 
 CMD ["npm","run","dev"]
 
-EXPOSE 5173
-
-
-
+EXPOSE 80

@@ -40,9 +40,9 @@ export default function Home() {
   <Toaster/>
     <BrowserRouter>
     <Routes>
-      <Route  path="/" Component={LoginCard}/>
-      <Route  path="/register" Component={RegisterCard}/>
-      <Route  path="/verify/:token" Component={EmailVerify}/> 
+      <Route path="/" Component={LoginCard}/>
+      <Route path="/register" Component={RegisterCard}/>
+      <Route path="/verify/:token" Component={EmailVerify}/> 
       <Route path="/StudentRegister" Component={StudentRegister}/>
       <Route path="/FacultyRegister" Component={FacultyRegister}></Route>
       <Route path="/ForgotPasswordEmail" Component={ForgotPasswordEmail}/>
@@ -55,8 +55,8 @@ export default function Home() {
         <StudentRoute/>
         </>}>
       <Route path="/StudentHome" Component={StudentHome}/>
-      <Route  path="/test/code" element={<CodingPage SetDescription={true}/>}/>
-      <Route  path="/CodeCompiler" Component={StudentCodeCompiler}/>
+      <Route path="/test/code" element={<CodingPage SetDescription={true}/>}/>
+      <Route path="/CodeCompiler" Component={StudentCodeCompiler}/>
       <Route path="/StudentTests" Component={StudentTest}/>
       <Route path="StudentProfile" Component={Profile}/>
       <Route path="/StudentDashboard" Component={StudentDashboard}/>
@@ -74,7 +74,7 @@ export default function Home() {
         </>}>
         <Route path="/FacultyHome" Component={FacultyHome}></Route>
         <Route path="/CreateQuestion" Component={CreateQuestions}></Route>
-        <Route  path="/FacultyCodeCompiler" Component={StudentCodeCompiler}/>
+        <Route path="/FacultyCodeCompiler" Component={StudentCodeCompiler}/>
         <Route path="/FacultyProfile" Component={Profile}/>
         <Route path="/FacultyTest" Component={FacultyTest}/>
         <Route path="/FacultyResult/:type/:TestId" Component={FacultyResult}/>
