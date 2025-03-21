@@ -14,4 +14,4 @@ COPY . .
 
 CMD ["npm","run","dev"]
 
-EXPOSE 80
+EXPOSE 5173

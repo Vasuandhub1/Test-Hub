@@ -48,7 +48,7 @@ export function RegisterCard() {
         toast({ title: "Validation Error", description: err.errors.join(", ") });
       } else {
         toast({title:err?.response?.data?.message , description:err?.response?.data?.data})
-        
+
       }
     }
     setSubmitting(false);

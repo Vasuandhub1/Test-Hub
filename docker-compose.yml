@@ -1,6 +1,6 @@
 services:
   backend:
-    build: ./Server
+    image: vasusingh9691/test-hub-server
     ports:
       - "3000:3000"
     env_file:
@@ -12,9 +12,9 @@ services:
       - mern-network
 
   frontend:
-    build: ./client
+    image: vasusingh9691/test-hub-client
     ports:
-      - "80:80"
+      - "5173:5173"
     environment:
       - VITE_BACKEND_URL=http://backend:3000
     depends_on:
