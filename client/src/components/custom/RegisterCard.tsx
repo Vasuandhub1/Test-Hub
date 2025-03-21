@@ -40,7 +40,7 @@ export function RegisterCard() {
     setSubmitting(true);
     try {
       await validationSchema.validate({ ...data, role }, { abortEarly: false });
-      const req = { userEmail: data.email, userPassword: data.password, role, url: "http://localhost:80/verify" };
+      const req = { userEmail: data.email, userPassword: data.password, role, url: "http://localhost:5173/verify" };
       await axios.post("http://localhost:3000/test-hub/User", req);
       toast({ title: "Success", description: "Successful register (please verify your accont using your email)" });
     } catch (err) {
