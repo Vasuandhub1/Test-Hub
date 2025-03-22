@@ -56,9 +56,9 @@ const params=useParams()
 
   const handleButton = async()=>{
     try{
-        const data = {Email:Email,url:"http://localhost:5173/ResetPassword"}
+        const data = {Email:Email,url:"http://localhost:80/ResetPassword"}
 
-        await axios.post("http://localhost:3000/test-hub/ResetPassword",{Email:Email,url:"http://localhost:5173/ResetPassword"})
+        await axios.post("http://localhost:3000/test-hub/ResetPassword",{Email:Email,url:"http://localhost:80/ResetPassword"})
 
         toast({title:"Reset Password",description:"Reset Password token send on provided email Account"})
     }catch(err){

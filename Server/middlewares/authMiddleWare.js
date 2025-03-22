@@ -34,4 +34,44 @@ const IsCreatedFaculty = async(req,res,next)=>{
     }
 }
 
-module.exports = {IsCreateStudent,IsCreatedFaculty}
+const IsStudent =  async(req,res,next)=>{
+    try{
+        const {Student} = req.cookies
+        if(Student){
+            const token = await getTokenData(Student)
+            const student = await User.findById(token._id)
+            
+            if(student){
+                return next()
+            }else{
+                return next(handelErr(res,"student not found","Authentication Err",401)) 
+            }
+        }else{
+            return next(handelErr(res,"Token Not found","Authentication Err",401))
+        }
+    }catch(err){
+        return next(handelErr(res,err.message,err,404))
+    }
+}
+
+const IsFaculty =  async(req,res,next)=>{
+    try{
+        const {Faculty} = req.cookies
+        if(Faculty){
+            const token = await getTokenData(Faculty)
+            const faculty = await User.findById(token._id)
+            
+            if(faculty){
+                return next()
+            }else{
+                return next(handelErr(res,"faculty not found","Authentication Err",401)) 
+            }
+        }else{
+            return next(handelErr(res,"Token Not found","Authentication Err",401))
+        }
+    }catch(err){
+        return next(handelErr(res,err.message,err,404))
+    }
+}
+
+module.exports = {IsCreateStudent,IsCreatedFaculty,IsStudent,IsFaculty}
