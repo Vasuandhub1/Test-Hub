@@ -1,6 +1,6 @@
 services:
   backend:
-    image: vasusingh9691/test-hub-server
+    build: ./Server
     ports:
       - "3000:3000"
     env_file:
