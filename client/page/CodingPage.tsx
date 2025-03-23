@@ -13,10 +13,6 @@ import { RootState } from '@reduxjs/toolkit/query'
 import {debounce} from "../utils/utils"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 
-
-
-
-
 import axios from 'axios'
 import { Badge } from "@/components/ui/badge"
 
@@ -47,6 +43,8 @@ function CodingPage({SetDescription,Question}) {
 
         }catch(err){
           console.log(err)
+          SetOutput(err?.response?.data?.message)
+          toast({title:err?.response?.data?.message , description:err?.response?.data?.data})
         }
       }
 
@@ -79,7 +77,7 @@ function CodingPage({SetDescription,Question}) {
     }).catch((err)=>{
       SetTerminal("Err in the server")
       console.log(err)
-      toast({title:"Server Err",description:err.message})
+      toast({title:err?.response?.data?.message , description:err?.response?.data?.data})
     })
     
    

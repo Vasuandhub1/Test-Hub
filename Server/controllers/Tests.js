@@ -163,8 +163,10 @@ const StartCodingTest  = async (req,res,next)=>{
 }
 // now get all the availabe test
 const GetAllCodingTest = async(req,res,next)=>{
+    const {Student}= req.cookies
     try{
-        const data = await CodeTest.find().populate("Faculty")
+        const token = await getTokenData(Student)
+        const data = await CodeTest.find({$or:[{Branch:token.branch },{Branch:"All"}]}).populate("Faculty")
         
         return next(handelSucess(res,"sucessfully fetchted the data",data))
     }catch(err){
@@ -378,8 +380,10 @@ const SubmitTest = async(req,res,next)=>{
 }
 
 const GetAllMCQTest = async(req,res,next)=>{
+    const {Student}= req.cookies
     try{
-        const data = await MCQtest.find().populate("Faculty")
+        const token = await getTokenData(Student)
+        const data = await MCQtest.find({$or:[{Branch:token.branch},{Branch:"All"}]}).populate("Faculty")
         
         return next(handelSucess(res,"sucessfully fetchted the data",data))
     }catch(err){
@@ -478,20 +482,21 @@ const SubmitMCQTestQuestion = async(req,res,next)=>{
             if(data.ans === Question.correctAns){
                 // if the ans ic correct
                 if(IsResult){
-                    const marks=IsResult.TotalMarksObtained+5;
+                    const marks=IsResult.TotalMarksObtained+2;
                     await MCQTestResult.findByIdAndUpdate(IsResult._id,{TotalMarksObtained:marks})
                     return next(handelSucess(res,"sucess","Saved sucess"))
                 }else{
-                    await MCQTestResult.create({TotalMarksObtained:5,StudentId:StudentToken.student_id,MCQTest:MCQToken._id,TotalMarks:MCQToken.TotalMarks})
+                    console.log(MCQToken)
+                    await MCQTestResult.create({TotalMarksObtained:2,StudentId:StudentToken.student_id,MCQTest:MCQToken._id,TotalMarks:MCQToken.TotalMarks})
                     return next(handelSucess(res,"sucess","Saved sucess"))
                 }
             }else{
 
-                const IsResult = await MCQTestResult.findOne({StudentId:StudentToken.student_id,TestId:MCQToken._id})
+                const IsResult = await MCQTestResult.findOne({TotalMarksObtained:0,StudentId:StudentToken.student_id,TestId:MCQToken._id})
                 if(IsResult){
                     return next(handelSucess(res,"sucess","Saved sucess"))
                 }else{
-                    await MCQTestResult.create({TotalMarksObtained:5,TestId:MCQToken._id,StudentId:StudentToken.student_id,MCQTest:MCQToken._id,TotalMarks:MCQToken.TotalMarks})
+                    await MCQTestResult.create({TotalMarksObtained:0,TestId:MCQToken._id,StudentId:StudentToken.student_id,MCQTest:MCQToken._id,TotalMarks:MCQToken.TotalMarks})
                     return next(handelSucess(res,"sucess","Saved sucess"))
                 }
             }

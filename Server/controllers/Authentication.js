@@ -128,13 +128,15 @@ const loginUser= async(req,res,next)=>{
                                      section:isStudent.Section,
                                      branch:isStudent.Branch,
                                      DOB:isStudent.DOB,
-                                     role:isPresent.role
+                                     role:isPresent.role,
+                                     year:isPresent.Year
                                  }
                                  const payload={
                                      _id:isPresent._id,
                                      email:isPresent.email,
                                      role:isPresent.role,
-                                     student_id:isStudent._id
+                                     student_id:isStudent._id,
+                                     branch:isStudent.Branch
                                  }
                                  const token = await createToken(payload,"2h")
                                  // now send the res

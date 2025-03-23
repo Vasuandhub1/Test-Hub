@@ -10,6 +10,8 @@ import { toast } from '@/hooks/use-toast';
 import { EndTest } from '../Redux/slices/CodeTestData';
 
 
+
+
 function CodingTest() {
     const Dispatch = useDispatch()
     const [...Questions]  = useSelector((state:RootState)=>state.CodeTestData.Questions)
@@ -44,6 +46,7 @@ function CodingTest() {
         Dispatch(EndTest())
       }catch(err){
         console.log(err)
+        toast({title:err?.response?.data?.message , description:err?.response?.data?.data})
       }
     }
     console.log(Question,"Question")
@@ -61,6 +64,7 @@ function CodingTest() {
             })
         }catch(err){
             console.log(err)
+            toast({title:err?.response?.data?.message , description:err?.response?.data?.data})
         }
     }
 

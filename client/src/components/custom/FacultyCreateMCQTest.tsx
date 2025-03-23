@@ -159,6 +159,7 @@ function FacultyCreateMCQTest() {
         SetSubjects([...res?.data?.data])
     }catch(err){
         console.log(err)
+        
     }
   }
   console.log(Subjects)

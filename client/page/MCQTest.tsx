@@ -7,9 +7,12 @@ import axios from 'axios';
 import { toast } from '@/hooks/use-toast';
 import { EndTest } from '../Redux/slices/MCQTestData';
 import StudentMCQTest from "../src/components/custom/StudentMCQTest"
+import { useNavigate } from 'react-router-dom';
+
 
 function MCQTest() {
     const Dispatch = useDispatch()
+    const navigate = useNavigate()
     const [...Questions]  = useSelector((state:RootState)=>state.MCQTestData.Questions)
     interface QuestionData{
        _id:string,
@@ -30,8 +33,10 @@ function MCQTest() {
         const res = await axios.post("http://localhost:3000/student-test-hub/Student/TestCodeSubmit","",{withCredentials:true})
         toast({title:res?.data?.data?.message,description:res?.data?.data?.data})
         Dispatch(EndTest())
+        navigate("/StudentTests")
       }catch(err){
         console.log(err)
+        toast({title:err?.response?.data?.message , description:err?.response?.data?.data})
       }
     }
     
@@ -47,6 +52,7 @@ function MCQTest() {
             })
         }catch(err){
             console.log(err)
+            toast({title:err?.response?.data?.message , description:err?.response?.data?.data})
         }
     }
 
