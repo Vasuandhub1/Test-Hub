@@ -1,4 +1,5 @@
 const mongoose = require("mongoose")
+const { type } = require("node:os")
 
 const MCQTest = new mongoose.Schema({
     TestName:{
@@ -20,6 +21,10 @@ const MCQTest = new mongoose.Schema({
         },
         TestExpireTime:{
             type:Date,
+            required:true
+        },
+        TotalMarks:{
+            type:Number,
             required:true
         },
         AttemptTime:{

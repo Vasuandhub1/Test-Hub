@@ -1,5 +1,6 @@
 const mongoose = require("mongoose")
 const Faculty = require("./Faculty")
+const { type } = require("os")
 
 
 const CodeTest = new mongoose.Schema({
@@ -41,6 +42,10 @@ const CodeTest = new mongoose.Schema({
     AttemptedTestStudentList:{
         type:[mongoose.Schema.Types.ObjectId],
         ref:"Student"
+    },
+    TotalMarks:{
+        type:Number,
+        required:true
     },
     Faculty:{
         type:mongoose.Schema.Types.ObjectId,

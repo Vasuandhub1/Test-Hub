@@ -78,6 +78,7 @@ function CodingPage({SetDescription,Question}) {
 
     }).catch((err)=>{
       SetTerminal("Err in the server")
+      console.log(err)
       toast({title:"Server Err",description:err.message})
     })
     

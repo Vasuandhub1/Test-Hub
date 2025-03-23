@@ -59,6 +59,7 @@ function FacultyCreateCodingTest() {
   }
   const [Questions,Setquestions] = useState<Ques[]>([])
   const [Page,SetPage] = useState(0)
+  
   const [SelectedQuestions,SetSelectedQuestions] = useState<Ques[]>([])
   const [Startdate, setStartDate] = React.useState<Date>()
   const [Enddate, setEndDate] = React.useState<Date>()
@@ -82,14 +83,24 @@ function FacultyCreateCodingTest() {
     
       Branch:Data.Branch,
       Year:Data.Year,
-      Questions:[]
+      Questions:[],
+      TotalMarks:0
     }
 
     if(!payload.TestName || !payload.TestDescription || !payload.AttemptTime || !payload.TestStartTime || !payload.TestExpireTime || !payload.Questions){
      return  toast({title:"Fill all the detials" ,description:"Please fill all th detils"})
     }
 
-    SelectedQuestions.map((elem)=>payload.Questions.push(elem._id))
+    SelectedQuestions.map((elem)=>{payload.Questions.push(elem._id)
+      if(elem.DifficultyLevel==="Easy"){
+        payload.TotalMarks+=5
+      }else if(elem.DifficultyLevel === "Medium"){
+        payload.TotalMarks+=10
+      }else{
+        payload.TotalMarks+=15
+      }
+    })
+    console.log(payload)
 
     const res = await axios.post("http://localhost:3000/Faculty-test-hub/Faculty/CreateCodeTest",payload,{withCredentials:true})
 
@@ -137,8 +148,17 @@ function FacultyCreateCodingTest() {
     }else{
       res.data.data.forEach(element => {
         element.selected=false
+        SelectedQuestions.forEach((value)=>{
+          if(value._id == element._id){
+            console.log(value._id,"here")
+            element.selected=true
+            return
+          }
+        })
+        
       });
       Setquestions([...res.data.data])
+      
     }
 
     
@@ -147,7 +167,7 @@ function FacultyCreateCodingTest() {
   useEffect(()=>{
     GetAllQuestions()
   },[Page])
-  console.log(Data)
+  console.log(Questions,"Questions")
  
   return (
     <div>

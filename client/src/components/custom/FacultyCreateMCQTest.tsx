@@ -82,14 +82,17 @@ function FacultyCreateMCQTest() {
       Subject:Data.subject,
       Branch:Data.Branch,
       Year:Data.Year,
-      Questions:[]
+      Questions:[],
+      TotalMarks:0
     }
 
     if(!payload.TestName || !payload.TestDescription || !payload.AttemptTime || !payload.TestStartTime || !payload.TestExpireTime || !payload.Questions){
      return  toast({title:"Fill all the detials" ,description:"Please fill all th detils"})
     }
 
-    SelectedQuestions.map((elem)=>payload.Questions.push(elem._id))
+    SelectedQuestions.map((elem)=>{payload.Questions.push(elem._id)
+      payload.TotalMarks+=2
+    })
 
     const res = await axios.post("http://localhost:3000/Faculty-test-hub/Faculty/CreateMCQTest",payload,{withCredentials:true})
 
@@ -138,11 +141,17 @@ function FacultyCreateMCQTest() {
     }else{
       res.data.data.forEach(element => {
         element.selected=false
+        Questions.forEach((values)=>{
+          if(element._id === values._id){3 
+            element.selected = true;
+            return 
+          }
+        })
       });
       Setquestions([...res.data.data])
     }
   }
-  
+   
 
   const GetAllSubjects = async()=>{
     try{

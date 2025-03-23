@@ -8,7 +8,7 @@ const MCQTestResult = new mongoose.Schema({
         TotalMarks:{
             type:String,
             required:true,
-            default:100
+            
         },
         TotalMarksObtained:{
             type:String,

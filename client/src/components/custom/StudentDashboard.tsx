@@ -54,13 +54,13 @@ export default function StudentDashboard() {
         <CardHeader>
           <CardTitle>Average Score</CardTitle>
         </CardHeader>
-        <CardContent className="text-2xl font-bold">{(Data?.AverageObtainedMarks/Data?.AverageTotalMarks )*100}%</CardContent>
+        <CardContent className="text-2xl font-bold">{Math.round((Data?.AverageObtainedMarks/Data?.AverageTotalMarks )*100)}%</CardContent>
       </Card>
       <Card>
         <CardHeader>
           <CardTitle>Best Performance</CardTitle>
         </CardHeader>
-        <CardContent className="text-2xl font-bold">{Data?.MaxMarks/Data?.AverageTotalMarks*100} (Coding Test Marks)</CardContent>
+        <CardContent className="text-2xl font-bold">{Math.round(Data?.MaxMarks/Data?.AverageTotalMarks*100)} (Coding Test Marks)</CardContent>
       </Card>
 
       {/* Bar Chart: Marks per Test Type */}

@@ -129,7 +129,8 @@ const StartCodingTest  = async (req,res,next)=>{
                     // create Test Token 
                     const TestTokenPayload = {
                         _id:test._id,
-                        TestName:test.TestName
+                        TestName:test.TestName,
+                        TotalMarks:test.TotalMarks
                     } 
                     const TestToken = await createToken(TestTokenPayload,"24h")
 
@@ -317,6 +318,7 @@ const handleQuestionCodeSubmitte = async (req, res, next) => {
                                             QuestionId: [QuestionId],
                                             TotalMarksObtained: marks,
                                             StudentId: StudentToken.student_id,
+                                            TotalMarks:TestToken.TotalMarks
                                         });
 
                                         return next(handelSucess(res, "Submitted successfully", decodedResult));
@@ -413,7 +415,8 @@ const StartMCQTest = async(req,res,next)=>{
                     // create Test Token 
                     const TestTokenPayload = {
                         _id:test._id,
-                        TestName:test.TestName
+                        TestName:test.TestName,
+                        TotalMarks:test.TotalMarks
                     } 
                     const TestToken = await createToken(TestTokenPayload,"24h")
 
@@ -474,13 +477,12 @@ const SubmitMCQTestQuestion = async(req,res,next)=>{
             // check if the ans id correct 
             if(data.ans === Question.correctAns){
                 // if the ans ic correct
-                const IsResult = await MCQTestResult.findOne({StudentId:StudentToken.student_id,TestId:MCQToken._id})
                 if(IsResult){
                     const marks=IsResult.TotalMarksObtained+5;
                     await MCQTestResult.findByIdAndUpdate(IsResult._id,{TotalMarksObtained:marks})
                     return next(handelSucess(res,"sucess","Saved sucess"))
                 }else{
-                    await MCQTestResult.create({TotalMarksObtained:5,StudentId:StudentToken.student_id,MCQTest:MCQToken._id})
+                    await MCQTestResult.create({TotalMarksObtained:5,StudentId:StudentToken.student_id,MCQTest:MCQToken._id,TotalMarks:MCQToken.TotalMarks})
                     return next(handelSucess(res,"sucess","Saved sucess"))
                 }
             }else{
@@ -489,7 +491,7 @@ const SubmitMCQTestQuestion = async(req,res,next)=>{
                 if(IsResult){
                     return next(handelSucess(res,"sucess","Saved sucess"))
                 }else{
-                    await MCQTestResult.create({TotalMarksObtained:5,TestId:MCQToken._id,StudentId:StudentToken.student_id,MCQTest:MCQToken._id})
+                    await MCQTestResult.create({TotalMarksObtained:5,TestId:MCQToken._id,StudentId:StudentToken.student_id,MCQTest:MCQToken._id,TotalMarks:MCQToken.TotalMarks})
                     return next(handelSucess(res,"sucess","Saved sucess"))
                 }
             }
