@@ -2,41 +2,45 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useEffect, useState } from "react";
 import { BarChart, Bar, XAxis, YAxis, Tooltip, LineChart, Line, ResponsiveContainer } from "recharts";
 import axios from "axios";
+import {Student_Base_URL} from "../../../utils/url.ts"
+
+console.log(`${Student_Base_URL},hello`)
 
 
 
-const performanceTrendMCQ = [
-  { date: "Jan", score: 70 },
-  { date: "Feb", score: 75 },
-  { date: "Mar", score: 80 },
-  { date: "Apr", score: 85 },
-];
 
-const performanceTrendCoding = [
-  { date: "Jan", score: 78 },
-  { date: "Feb", score: 82 },
-  { date: "Mar", score: 88 },
-  { date: "Apr", score: 92 },
-];
+
+
 
 export default function StudentDashboard() {
   const [Data,SetData] = useState()
+  const [mcqData,SetmcqData] = useState()
+  const [performanceTrendCoding,SetperformanceTrendCoding]=useState([])
+  const [performanceTrendMCQ,SetperformanceTrendMCQ] = useState([])
   const GetAllResults = async()=>{
  
     try{
-      const res = await axios.get("http://localhost:3000/student-test-hub/StudentDashboard",{withCredentials:true})
+      const res = await axios.get(`${Student_Base_URL}/StudentDashboard`,{withCredentials:true})
       console.log(res,"dashboard")
-      SetData(res?.data?.data[0])
+      SetData(res?.data?.data?.code[0])
+      SetmcqData(res?.data?.data?.mcq[0])
+      const CodeResultTrend = [...res?.data?.data?.codeResult]
+      SetperformanceTrendCoding([...res?.data?.data?.codeResult])
+      SetperformanceTrendMCQ([...res?.data?.data?.mcqresults])
+
+      
+
       
     }catch(err){
       console.log(err)
     }
   } 
   console.log(Data)
+  console.log(performanceTrendCoding,"code")
 
   const testPerformanceData = [
-    { testType: "MCQ Test", marks: 80 },
-    { testType: "Coding Test", marks: (Data?.AverageObtainedMarks/Data?.AverageTotalMarks )*100 },
+    { testType: "MCQ Test", marks: (mcqData?.AverageObtainedMarks/mcqData?.AverageTotalMarks )*100 ?  (mcqData?.AverageObtainedMarks/mcqData?.AverageTotalMarks )*100:mcqData.MaxMarks},
+    { testType: "Coding Test", marks: (Data?.AverageObtainedMarks/Data?.AverageTotalMarks )*100 ?  (Data?.AverageObtainedMarks/Data?.AverageTotalMarks )*100:Data.MaxMarks },
   ];
   useEffect(()=>{
     GetAllResults()
@@ -88,7 +92,7 @@ export default function StudentDashboard() {
         <CardContent>
           <ResponsiveContainer width="100%" height={300}>
             <LineChart data={performanceTrendMCQ}>
-              <XAxis dataKey="date" />
+              <XAxis dataKey="total" />
               <YAxis />
               <Tooltip />
               <Line type="monotone" dataKey="score" stroke="#f39c12" strokeWidth={2} />
@@ -105,7 +109,7 @@ export default function StudentDashboard() {
         <CardContent>
           <ResponsiveContainer width="100%" height={300}>
             <LineChart data={performanceTrendCoding}>
-              <XAxis dataKey="date" />
+              <XAxis dataKey="total" />
               <YAxis />
               <Tooltip />
               <Line type="monotone" dataKey="score" stroke="#82ca9d" strokeWidth={2} />

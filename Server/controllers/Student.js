@@ -5,6 +5,7 @@ const {createToken, getTokenData}=require("../utils/createToken")
 const CodeTestResult = require("../models/CodeTestResult")
 const Students = require("../models/Students")
 const mongoose = require("mongoose")
+const MCQTestResult = require("../models/MCQTestResult")
 
 
 const StudentRegister = async(req,res,next)=>{
@@ -71,8 +72,9 @@ const GetAllResults = async(req,res,next)=>{
 
             // now get all the test of the students 
             const results = await CodeTestResult.find({StudentId:Token.student_id}).populate("TestId",["TestStartTime","TestName","TestType"])
+            const MCQresults = await MCQTestResult.find({StudentId:Token.student_id}).populate("TestId",["TestStartTime","TestName","TestType"])
 
-            return next(handelSucess(res,"Sucessful",results))
+            return next(handelSucess(res,"Sucessful",{code:results,mcq:MCQresults}))
         }else{
             return next(handelErr(res,"Student Not found","",401))
         }
@@ -109,10 +111,81 @@ const GetDashboardData=async(req,res,next)=>{
                   }
                 }
               ])
+            const MCQdata = await MCQTestResult.aggregate([
+                {
+                  $match: {
+                    StudentId: new mongoose.Types.ObjectId(token.student_id) 
+                  }
+                },
+                {
+                  $group: {
+                    _id: "$StudentId",
+                    AverageTotalMarks: { $avg: "$TotalMarks" },
+                    AverageObtainedMarks: {
+                      $avg: "$TotalMarksObtained"
+                    },
+                    MaxMarks: { $max: "$TotalMarksObtained" },
+                    TotalTest: { $sum: 1 }
+                  }
+                }
+              ])
+
+               const results = await CodeTestResult.aggregate([
+                {
+                  $match: {
+                    StudentId:new mongoose.Types.ObjectId(token.student_id)
+                  }
+                },
+                {
+                  $lookup:{
+                    from: "tests",
+                    localField: "TestId",
+                    foreignField: "_id",
+                    as: "Test"
+                  }
+                },
+                {
+                  $unwind: "$Test"
+                },
+                {
+                  $project: {
+                    date: "$Test.TestStartTime",
+                    score: "$TotalMarksObtained",
+                    total: "$TotalMarks"
+                  }
+                }
+                
+              ])
+            const MCQresults = await MCQTestResult.aggregate([
+                {
+                  $match: {
+                    StudentId:new mongoose.Types.ObjectId(token.student_id)
+                  }
+                },
+                {
+                  $lookup:{
+                    from: "mcqtests",
+                    localField: "TestId",
+                    foreignField: "_id",
+                    as: "Test"
+                  }
+                },
+                {
+                  $unwind: "$Test"
+                },
+                {
+                  $project: {
+                    date: "$Test.TestStartTime",
+                    score: "$TotalMarksObtained",
+                    total: "$TotalMarks"
+                  }
+                }
+                
+              ])
               
 
               if(data){
-                return next(handelSucess(res,"sucessful",data))
+                return next(handelSucess(res,"sucessful",{code:data,mcq:MCQdata,codeResult:results,mcqresults:MCQresults}))
               }else{
                 return next(handelErr(res,"Err data not found","error",402))
               }

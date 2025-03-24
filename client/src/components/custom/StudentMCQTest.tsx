@@ -8,6 +8,8 @@ import { Button } from "../ui/button";
 import axios from "axios";
 import { title } from "process";
 import { toast } from "@/hooks/use-toast";
+ import {Student_Base_URL} from "../../../utils/url.ts"
+
 
 const question = {
   id: 1,
@@ -32,7 +34,7 @@ export default function StudentMCQTest({Question,index}) {
     try{
       const data ={_id:Question._id,ans:selectedAnswer}
       console.log(data,"data")
-      const res = await axios.post("http://localhost:3000/student-test-hub/Student/MCQQuestionSubmission",{data},{withCredentials:true})
+      const res = await axios.post(`${Student_Base_URL}/Student/MCQQuestionSubmission`,{data},{withCredentials:true})
       toast({title:"sucess saved can not be revert"})
     }catch(err){
       console.log(err)

@@ -15,6 +15,8 @@ import {
   import axios from 'axios'
   import { StartTest } from '../../../Redux/slices/CodeTestData'
 import { toast } from '@/hooks/use-toast'
+ import {Student_Base_URL} from "../../../utils/url.ts"
+
 
 
 function TestStartConfirmaition() {
@@ -28,7 +30,7 @@ function TestStartConfirmaition() {
   const StartTests = async()=>{
     try{
      if(Check){
-      const res = await axios.get(`http://localhost:3000/student-test-hub/Student/CodeTest/${params.TestId}`,{withCredentials:true})
+      const res = await axios.get(`${Student_Base_URL}/Student/CodeTest/${params.TestId}`,{withCredentials:true})
       console.log(res.data.data)
       const payload ={TestId:res.data.data._id,Questions:res.data.data.Questions}
       dispatch(StartTest(payload))

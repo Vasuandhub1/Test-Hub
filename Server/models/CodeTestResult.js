@@ -9,6 +9,7 @@ const CodeTestResult = new mongoose.Schema({
     TotalMarks:{
         type:Number,
         required:true,
+
     },
     TotalMarksObtained:{
         type:Number,

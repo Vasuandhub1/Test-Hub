@@ -16,7 +16,7 @@ const MCQTestResult = new mongoose.Schema({
         },
         TestId:{
             type:mongoose.Schema.Types.ObjectId,
-            ref:"tests",
+            ref:"MCQTest",
             required:true
         }
 })

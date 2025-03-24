@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { Card,CardContent,CardDescription,CardHeader,CardFooter,CardTitle } from '../ui/card'
 import axios from 'axios'
 import { useNavigate } from 'react-router-dom'
+import {Student_Base_URL} from "../../../utils/url.ts"
 
 function StudentMCQTestsList() {
     const [List,SetList] = useState([])
@@ -9,7 +10,7 @@ function StudentMCQTestsList() {
 
     const GetCodeTestList = async()=>{
         try{
-        const res = await axios.get("http://localhost:3000/Student-test-hub/Student/MCQTest",{withCredentials:true})
+        const res = await axios.get(`${Student_Base_URL}/Student/MCQTest`,{withCredentials:true})
         console.log(res.data.data,"data")
         SetList([...res.data.data])
         }
@@ -22,7 +23,7 @@ function StudentMCQTestsList() {
     const StartCodingTest = async(TestId:string)=>{
         console.log(TestId)
         navigate(`/StdeudentMCQTestStartConfirmation/${TestId}`)
-        const res = await axios.get(`http://localhost:3000/student-test-hub/CodeTest/${TestId}`,{withCredentials:true})
+        const res = await axios.get(`${Student_Base_URL}/CodeTest/${TestId}`,{withCredentials:true})
         
     }
 

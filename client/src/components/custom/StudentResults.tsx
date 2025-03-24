@@ -2,6 +2,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from "@/components/ui/table";
 import axios from "axios";
 import { useEffect, useState } from "react";
+ import {Student_Base_URL} from "../../../utils/url.ts"
 
 
 
@@ -12,9 +13,10 @@ export default function StudentResults() {
   const GetAllResults = async()=>{
  
     try{
-      const res = await axios.get("http://localhost:3000/student-test-hub/StudentResult",{withCredentials:true})
+      const res = await axios.get(`${Student_Base_URL}/StudentResult`,{withCredentials:true})
       console.log(res)
-      SetResults([...res?.data?.data])
+      SetResults([...res?.data?.data?.code,...res?.data?.data?.mcq])
+      
       
     }catch(err){
       console.log(err)

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { Card,CardContent,CardDescription,CardHeader,CardFooter,CardTitle } from '../ui/card'
 import axios from 'axios'
 import { useNavigate } from 'react-router-dom'
+import {Student_Base_URL} from "../../../utils/url.ts"
 
 function StudentCodingTestsList() {
     const [List,SetList] = useState([])
@@ -9,7 +10,7 @@ function StudentCodingTestsList() {
 
     const GetCodeTestList = async()=>{
         try{
-        const res = await axios.get("http://localhost:3000/Student-test-hub/Student/CodeTests",{withCredentials:true})
+        const res = await axios.get(`${Student_Base_URL}/Student/CodeTests`,{withCredentials:true})
         console.log(res.data.data,"data")
         SetList([...res.data.data])
         }
