@@ -39,8 +39,8 @@ export default function StudentDashboard() {
   console.log(performanceTrendCoding,"code")
 
   const testPerformanceData = [
-    { testType: "MCQ Test", marks: (mcqData?.AverageObtainedMarks/mcqData?.AverageTotalMarks )*100 ?  (mcqData?.AverageObtainedMarks/mcqData?.AverageTotalMarks )*100:mcqData.MaxMarks},
-    { testType: "Coding Test", marks: (Data?.AverageObtainedMarks/Data?.AverageTotalMarks )*100 ?  (Data?.AverageObtainedMarks/Data?.AverageTotalMarks )*100:Data.MaxMarks },
+    { testType: "MCQ Test", marks: (mcqData?.AverageObtainedMarks/mcqData?.AverageTotalMarks )*100 ?  (mcqData?.AverageObtainedMarks/mcqData?.AverageTotalMarks )*100:mcqData?.MaxMarks},
+    { testType: "Coding Test", marks: (Data?.AverageObtainedMarks/Data?.AverageTotalMarks )*100 ?  (Data?.AverageObtainedMarks/Data?.AverageTotalMarks )*100:Data?.MaxMarks },
   ];
   useEffect(()=>{
     GetAllResults()
