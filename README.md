@@ -32,7 +32,7 @@
 
 ## Features 🌟
 
-- 🔐 Google Sign-in/Sign-up  
+- 🔐  Sign-in/Sign-up  
 - 🌗 Light/Dark Mode Toggle  
 - 💻 Interactive Coding Platform  
 - 🏫 Student & Teacher Dashboards  
@@ -58,7 +58,7 @@
 Follow these steps to set up Test-Hub locally.
 
 ### Prerequisites 📋
-- **Node.js**: v16+  
+- **Node.js**: v22  
 - **NPM**: Latest version (`npm install npm@latest -g`)  
 
 ### Installation 💾
@@ -76,7 +76,7 @@ Follow these steps to set up Test-Hub locally.
    npm start
    ```
 
-Open `http://localhost:3000` in your browser to see Test-Hub in action.
+Open `http://localhost:5173` in your browser to see Test-Hub in action.
 
 ## Usage 🎮
 
@@ -84,7 +84,7 @@ Open `http://localhost:3000` in your browser to see Test-Hub in action.
 2. **Explore**: Navigate to coding challenges, quizzes, or simulations.  
 3. **Track Progress**: View insights and recommendations on your dashboard.  
 
-*For detailed guides, refer to the [Documentation](docs/README.md).* *(Create a `docs/` folder if you plan to expand this.)*
+
 
 ### Example
 Run a sample quiz:
@@ -120,8 +120,8 @@ Distributed under the [MIT License](LICENSE). See the file for details.
 
 ## Contact 📧
 
-- **Author**: Vasu ([@Vasuandhub1](https://github.com/Vasuandhub1))  
-- **Email**: 
+- **Author**: Vasu ([@Vasuandhub1](https://github.com/Vasuandhub1)) , vimal ([@juniormishra](https://github.com/juniormishra))
+- **Email**: vasuisngh9691@gmail.com , vimalmishra1208@gmail.com 
 - **Project Link**: [https://github.com/Vasuandhub1/Test-Hub](https://github.com/Vasuandhub1/Test-Hub)  
 
 ## Acknowledgments 🙌

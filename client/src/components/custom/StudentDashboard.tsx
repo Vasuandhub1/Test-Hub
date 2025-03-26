@@ -7,11 +7,6 @@ import {Student_Base_URL} from "../../../utils/url.ts"
 console.log(`${Student_Base_URL},hello`)
 
 
-
-
-
-
-
 export default function StudentDashboard() {
   const [Data,SetData] = useState()
   const [mcqData,SetmcqData] = useState()
