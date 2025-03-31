@@ -8,6 +8,7 @@ import axios from "axios";
 import { toast, useToast } from "@/hooks/use-toast";
 import { setStudent } from "../../../Redux/slices/Student";
 import { useDispatch } from "react-redux";
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 
 
 import { Sun, Moon } from "lucide-react";
@@ -93,7 +94,10 @@ export default function StudentNavbar() {
          
         </div>
         <div className="text-black dark:text-white flex  justify-evenly gap-3 items-center text-lg font-bold">
-            <div>{name}</div>
+        <Avatar className="w-16 h-16  text-black dark:text-white">
+              <AvatarImage src="/default-avatar.png" alt="Profile Picture" />
+              <AvatarFallback className=" text-2xl font-medium   flex justify-center items-center" >{name.split(" ")[0]?.charAt(0)}{name.split(" ")[1]?.charAt(0)}</AvatarFallback>
+            </Avatar>
             <Button className="bg-red-700 text-white hover:bg-white hover:text-black dark:hover:text-white dark:hover:bg-black" onClick={handleLogout}>logout</Button>
           </div>
       </nav>

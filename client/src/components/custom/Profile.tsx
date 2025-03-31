@@ -44,7 +44,7 @@ export default function Profile() {
           <div className="flex items-center gap-4">
             <Avatar className="w-16 h-16  text-black dark:text-white">
               <AvatarImage src="/default-avatar.png" alt="Profile Picture" />
-              <AvatarFallback className=" text-3xl flex justify-center items-center" >{name.charAt(0)}</AvatarFallback>
+              <AvatarFallback className=" text-3xl flex justify-center items-center" >{name.split(" ")[0]?.charAt(0)}{name.split(" ")[1]?.charAt(0)}</AvatarFallback>
             </Avatar>
             <div>
               <Label className="text-sm">Student</Label>

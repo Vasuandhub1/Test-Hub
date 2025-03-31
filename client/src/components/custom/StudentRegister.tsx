@@ -7,6 +7,13 @@ import {toggleDarkMode} from "../../../Redux/slices/DarkLight"
 import { motion } from "framer-motion";
 import axios from 'axios';
 import { setStudent } from "../../../Redux/slices/Student";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
 
 
 function StudentRegister() {
@@ -40,7 +47,7 @@ function StudentRegister() {
         },3000)
      }).catch((err)=>{
         console.log(err)
-        toast({title:err?.response?.data?.message , description:err?.response?.data?.data})
+        toast({title:"pease fill all the details" , description:"Fill All the details"})
         setSubmitting(false)
      })
      console.log("hello")
@@ -73,12 +80,33 @@ function StudentRegister() {
             <input type="text" name="Enroll" required onChange={handleChange} value={data.Enroll} placeholder="Enroll No." className="w-full px-4 py-3 mb-3 border rounded-lg dark:bg-black dark:text-white" />
             <input type="text" name="Year" required onChange={handleChange} value={data.Year} placeholder="Year" className="w-full px-4 py-3 mb-3 border rounded-lg dark:bg-black dark:text-white" />
             <input type="text" name="Section" required onChange={handleChange} value={data.Section} placeholder="Section" className="w-full px-4 py-3 mb-3 border rounded-lg dark:bg-black dark:text-white" />
-            <input type="text" name="Branch" required onChange={handleChange} value={data.Branch} placeholder="Branch" className="w-full px-4 py-3 mb-3 border rounded-lg dark:bg-black dark:text-white" />
-            <select name='Gender'  required onChange={handleChange}  className="w-full px-4 py-3 mb-3 border rounded-lg dark:bg-black dark:text-white">
-                <option value="Male">Male</option>
-                <option value="Female">Female</option>
-                <option value="Other">Other</option>
-            </select>
+             
+      <Select onValueChange={(value)=>setData({...data,Branch:value})}  >
+  <SelectTrigger  className="w-full px-4 py-3 mb-3 border rounded-lg dark:bg-black dark:text-white" >
+    <SelectValue placeholder="Branch" />
+  </SelectTrigger>
+  <SelectContent>
+    <SelectItem value="CSE">CSE</SelectItem>
+    <SelectItem value="CIVIL">CIVIL</SelectItem>
+    <SelectItem value="ME">ME</SelectItem>
+    <SelectItem value="AI & DS">AI & DS</SelectItem>
+  </SelectContent>
+</Select>
+
+      <Select onValueChange={(value)=>setData({...data,Gender:value})} >
+  <SelectTrigger className="w-full px-4 py-3 mb-3 border rounded-lg dark:bg-black dark:text-white" >
+    <SelectValue placeholder="Gender" />
+  </SelectTrigger>
+  <SelectContent>
+    <SelectItem value="Male">Male</SelectItem>
+    <SelectItem value="Female">Female</SelectItem>
+    <SelectItem value="Other">Other</SelectItem>
+    
+  </SelectContent>
+</Select>
+   
+         
+
             <input type="date" name="DOB" required onChange={handleChange} value={data.DOB} placeholder="Date of birth" className="w-full px-4 py-3 mb-3 border rounded-lg dark:bg-zinc-800 dark:text-white" />
            
             <motion.button type="button" className="w-full px-4 py-3 rounded-xl bg-blue-600 dark:bg-blue-500 text-white" onClick={handelRegister}  disabled={submitting}>
