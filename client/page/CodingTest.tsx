@@ -75,6 +75,7 @@ function CodingTest() {
     useEffect(() => {
         GetQuestion()
         document.documentElement.requestFullscreen().catch(() => {});
+        
       }, [CurrentQuestion]);
       console.log(Question,"hell")
   return (
@@ -106,6 +107,7 @@ function CodingTest() {
         <div className="font-bold">Test Name</div>
         <div className="flex gap-2">
           <Button onClick={()=>{
+            console.log(CurrentQuestion)
             if(CurrentQuestion>0){
                 SetCurrentQuestion((data)=>data-1)
             }else{
@@ -113,8 +115,10 @@ function CodingTest() {
             }
           }}>Prev</Button>
           <Button onClick={()=>{
-            if(CurrentQuestion<Questions.length){
+            console.log(CurrentQuestion,Questions.length,"hellos")
+            if(CurrentQuestion+1<Questions.length){
                 SetCurrentQuestion((data)=>data+1)
+                
             }else{
                 toast({title:"Reached at last question"})
             }

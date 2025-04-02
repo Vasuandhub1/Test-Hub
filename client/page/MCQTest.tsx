@@ -102,7 +102,7 @@ function MCQTest() {
             }
           }}>Prev</Button>
           <Button onClick={()=>{
-            if(CurrentQuestion<Questions.length){
+            if(CurrentQuestion+1<Questions.length){
                 SetCurrentQuestion((data)=>data+1)
             }else{
                 toast({title:"Reached at last question"})
