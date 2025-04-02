@@ -481,16 +481,24 @@ const SubmitMCQTestQuestion = async(req,res,next)=>{
 
             // check if the ans id correct 
             if(Number(data.ans)+1 == Question.correctAns){
+                // we have to check that is not for same submisstion 
+                
                 console.log("Correct")
                 // if the ans ic correct
                 const IsResult = await MCQTestResult.findOne({StudentId:StudentToken.student_id,TestId:MCQToken._id})
+
+                
                 if(IsResult){
-                    const marks=IsResult.TotalMarksObtained+2;
-                    await MCQTestResult.findByIdAndUpdate(IsResult._id,{TotalMarksObtained:marks})
-                    return next(handelSucess(res,"sucess","Saved sucess"))
+                    if(!IsResult.QuestionList.includes(data._id)){
+                        const marks=Number(IsResult.TotalMarksObtained)+2;
+                        await MCQTestResult.findByIdAndUpdate(IsResult._id,{TotalMarksObtained:marks,$push:{QuestionList:data._id}},{new:true})
+                        return next(handelSucess(res,"sucess","Saved sucess"))
+                    }else{
+                         return next(handelSucess(res,"sucess","Saved sucess"))
+                    }
                 }else{
                     console.log(MCQToken,"creating ans")
-                    await MCQTestResult.create({TotalMarksObtained:2,StudentId:StudentToken.student_id,MCQTest:MCQToken._id,TotalMarks:MCQToken.TotalMarks})
+                    await MCQTestResult.create({TotalMarksObtained:2,StudentId:StudentToken.student_id,MCQTest:MCQToken._id,TotalMarks:MCQToken.TotalMarks ,$push:{QuestionList:data._id}})
                     return next(handelSucess(res,"sucess","Saved sucess"))
                 }
             }else{
@@ -499,7 +507,7 @@ const SubmitMCQTestQuestion = async(req,res,next)=>{
                 if(IsResult){
                     return next(handelSucess(res,"sucess","Saved sucess"))
                 }else{
-                    await MCQTestResult.create({TotalMarksObtained:0,TestId:MCQToken._id,StudentId:StudentToken.student_id,MCQTest:MCQToken._id,TotalMarks:MCQToken.TotalMarks})
+                    await MCQTestResult.create({TotalMarksObtained:0,TestId:MCQToken._id,StudentId:StudentToken.student_id,MCQTest:MCQToken._id,TotalMarks:MCQToken.TotalMarks,$push:{QuestionList:data._id}})
                     return next(handelSucess(res,"sucess","Saved sucess"))
                 }
             }

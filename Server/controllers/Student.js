@@ -79,7 +79,12 @@ const GetAllResults = async(req,res,next)=>{
             .then(data => data.filter(result => result.TestId !== null)); 
 
 
-            const MCQresults = await MCQTestResult.find({StudentId:Token.student_id}).populate("TestId",["TestStartTime","TestName","TestType"])
+            const MCQresults = await MCQTestResult.find({StudentId:Token.student_id}).populate({
+              path: "TestId",
+              match: { HideResult: false },
+              select: "TestStartTime TestName TestType",
+            })
+            .then(data => data.filter(result => result.TestId !== null)); 
 
             return next(handelSucess(res,"Sucessful",{code:results,mcq:MCQresults}))
         }else{

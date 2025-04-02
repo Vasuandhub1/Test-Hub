@@ -10,6 +10,10 @@ const MCQTestResult = new mongoose.Schema({
             required:true,
             
         },
+        QuestionList:{
+            type:[mongoose.Schema.Types.ObjectId],
+            ref:"mcqs"
+        },
         TotalMarksObtained:{
             type:String,
             required:true
