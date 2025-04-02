@@ -22,7 +22,7 @@ export default function StudentMCQTest({Question,index}) {
   const dispatch = useDispatch()
   const [selectedAnswer, setSelectedAnswer] = useState("");
 
-  console.log(Question,"Ques")
+  console.log(Question,"Ques",selectedAnswer)
 
   const handleSelect = (value) => {
     setSelectedAnswer(value);

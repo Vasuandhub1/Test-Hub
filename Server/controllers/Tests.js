@@ -471,28 +471,31 @@ const SubmitMCQTestQuestion = async(req,res,next)=>{
         if(MCQTest){
             const MCQToken = await getTokenData(MCQTest)
             const StudentToken = await getTokenData(Student)
-            console.log(MCQToken)
-            console.log(StudentToken)
-            console.log(data,"data")
+            
 
             // now we have to calculate thje merks 
-            const Question = MCQQuestionBank.findById(data._id)
+            const Question = await MCQQuestionBank.findById(data._id)
+            console.log(1 +Number(data.ans),data._id,Question.correctAns)
+
+
 
             // check if the ans id correct 
-            if(data.ans === Question.correctAns){
+            if(Number(data.ans)+1 == Question.correctAns){
+                console.log("Correct")
                 // if the ans ic correct
+                const IsResult = await MCQTestResult.findOne({StudentId:StudentToken.student_id,TestId:MCQToken._id})
                 if(IsResult){
                     const marks=IsResult.TotalMarksObtained+2;
                     await MCQTestResult.findByIdAndUpdate(IsResult._id,{TotalMarksObtained:marks})
                     return next(handelSucess(res,"sucess","Saved sucess"))
                 }else{
-                    console.log(MCQToken)
+                    console.log(MCQToken,"creating ans")
                     await MCQTestResult.create({TotalMarksObtained:2,StudentId:StudentToken.student_id,MCQTest:MCQToken._id,TotalMarks:MCQToken.TotalMarks})
                     return next(handelSucess(res,"sucess","Saved sucess"))
                 }
             }else{
-
-                const IsResult = await MCQTestResult.findOne({TotalMarksObtained:0,StudentId:StudentToken.student_id,TestId:MCQToken._id})
+                console.log("Wrong")
+                const IsResult = await MCQTestResult.findOne({StudentId:StudentToken.student_id,TestId:MCQToken._id})
                 if(IsResult){
                     return next(handelSucess(res,"sucess","Saved sucess"))
                 }else{

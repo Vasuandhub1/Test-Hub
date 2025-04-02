@@ -33,7 +33,7 @@ const MCQTest = new mongoose.Schema({
         },
         Questions:{
             type:[mongoose.Schema.Types.ObjectId],
-            ref:"MCQ",
+            ref:"mcqs",
             required:true
         },
         StudentList:{
@@ -51,6 +51,10 @@ const MCQTest = new mongoose.Schema({
         Section:{
             type:String,
             default:"All",
+        },
+        HideResult:{
+            type:Boolean,
+            default:false
         },
         Subject:{
             type:String,

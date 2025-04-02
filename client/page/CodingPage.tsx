@@ -60,17 +60,17 @@ function CodingPage({SetDescription,Question}) {
     SetTerminal("compiling...")
      await axios.post("http://localhost:3000/student-test-hub/test",{data}).then((res)=>{
       console.log(res)
-      if(res!.data!.data!.status_id === 3){
+      if(res?.data?.data?.status_id === 3){
         SetTerminal("running...")
         setTimeout(()=>{
           console.log(res)
-          SetTerminal(res!.data!.data!.stdout)
+          SetTerminal(res?.data?.data?.stdout)
         },3000)
         }else{
           SetTerminal("running...")
           setTimeout(() => {
             console.log(res)
-            SetTerminal(res!.data!.data!.status!.description)
+            SetTerminal(res?.data?.data?.status?.description)
           }, 3000);
         }
 

@@ -31,6 +31,7 @@ import axios from 'axios'
 import { Textarea } from '../ui/textarea'
 import { DatePicker } from '../ui/datePicker'
 import { toast } from '@/hooks/use-toast'
+import { data } from 'react-router-dom'
 
 
 
@@ -53,7 +54,8 @@ function FacultyCreateMCQTest() {
     AttemptDate:number,
     subject:string,
     Branch:string,
-    Year:string
+    Year:string,
+    Hide:string
    
   }
   const [Questions,Setquestions] = useState([])
@@ -67,7 +69,8 @@ function FacultyCreateMCQTest() {
     AttemptDate:0,
     subject:"All",
     Branch:"",
-    Year:"" 
+    Year:"",
+    Hide:"false"
   }
   )
 
@@ -83,9 +86,10 @@ function FacultyCreateMCQTest() {
       Branch:Data.Branch,
       Year:Data.Year,
       Questions:[],
-      TotalMarks:0
+      TotalMarks:0,
+      Hide:Data.Hide
     }
-
+    console.log("payload",payload)
     if(!payload.TestName || !payload.TestDescription || !payload.AttemptTime || !payload.TestStartTime || !payload.TestExpireTime || !payload.Questions){
      return  toast({title:"Fill all the detials" ,description:"Please fill all th detils"})
     }
@@ -122,7 +126,7 @@ function FacultyCreateMCQTest() {
       const temp2 = [...SelectedQuestions]
 
       const filteredQuestions = temp2.filter((elem) => {
-        if (elem._id !== temp[index]._id) {
+        if (elem._id != temp[index]._id) {
           return true; 
         }
         return false; 
@@ -267,6 +271,22 @@ function FacultyCreateMCQTest() {
 </Select>
     </label>
   </CardContent>
+
+   <CardContent>
+    <label>
+      Hide Results from Students
+        <Select onValueChange={(value)=>Setdata({...Data,Hide:value})} >
+    <SelectTrigger className="w-[180px]">
+      <SelectValue placeholder="Hide" />
+    </SelectTrigger>
+    <SelectContent>
+      <SelectItem value="true">Yes</SelectItem>
+      <SelectItem value="false">No</SelectItem>
+    
+    </SelectContent>
+  </Select>
+      </label>
+    </CardContent>
 
   <CardContent>
     <label htmlFor=""> Question for Test*

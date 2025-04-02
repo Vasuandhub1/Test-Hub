@@ -43,6 +43,10 @@ const CodeTest = new mongoose.Schema({
         type:[mongoose.Schema.Types.ObjectId],
         ref:"Student"
     },
+    HideResult:{
+        type:Boolean,
+        default:false
+    },
     TotalMarks:{
         type:Number,
         required:true

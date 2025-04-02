@@ -71,7 +71,14 @@ const GetAllResults = async(req,res,next)=>{
             const Token = await getTokenData(Student)
 
             // now get all the test of the students 
-            const results = await CodeTestResult.find({StudentId:Token.student_id}).populate("TestId",["TestStartTime","TestName","TestType"])
+            const results = await CodeTestResult.find({ StudentId: Token.student_id }).populate({
+              path: "TestId",
+              match: { HideResult: false },
+              select: "TestStartTime TestName TestType",
+            })
+            .then(data => data.filter(result => result.TestId !== null)); 
+
+
             const MCQresults = await MCQTestResult.find({StudentId:Token.student_id}).populate("TestId",["TestStartTime","TestName","TestType"])
 
             return next(handelSucess(res,"Sucessful",{code:results,mcq:MCQresults}))
@@ -146,6 +153,11 @@ const GetDashboardData=async(req,res,next)=>{
                 },
                 {
                   $unwind: "$Test"
+                },
+                {
+                  $match: {
+                    "Test.HideResult": false
+                  }
                 },
                 {
                   $project: {

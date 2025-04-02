@@ -31,4 +31,4 @@ const questios=new mongoose.Schema({
 
 })
 
-module.exports= mongoose.model("MCQ",questios)
+module.exports= mongoose.model("mcqs",questios)

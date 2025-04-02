@@ -161,10 +161,10 @@ try{
 const CreateCodeTest = async(req,res,next)=>{
     try{
         const {Faculty} = req.cookies
-        const {TestName,TestDescription,TestStartTime,TestExpireTime,AttemptTime,Questions,Branch,Year,TotalMarks}=req.body
+        const {TestName,TestDescription,TestStartTime,TestExpireTime,AttemptTime,Questions,Branch,Year,TotalMarks,Hide}=req.body
 
         // check if all the data are presnt 
-        if(TestName && TestDescription && TestStartTime && TestExpireTime && AttemptTime && Questions && TotalMarks){
+        if(TestName && TestDescription && TestStartTime && TestExpireTime && AttemptTime && Questions && TotalMarks && Hide){
             // now get the token data 
             const token  =  await getTokenData(Faculty)
             // find all the student and addto the list who can attempt the test
@@ -172,7 +172,7 @@ const CreateCodeTest = async(req,res,next)=>{
             if(Year==="All" && Branch === "All" ){
                  const Student = StudentList.map(student => student._id);
                
-            const CreatedTest = await CodeTest.create({TestName,TestDescription,TestStartTime,TestExpireTime,AttemptTime,Questions,Faculty:token.faculty_id,StudentList:Student,TotalMarks})
+            const CreatedTest = await CodeTest.create({TestName,TestDescription,TestStartTime,TestExpireTime,AttemptTime,Questions,Faculty:token.faculty_id,StudentList:Student,TotalMarks,HideResult:Hide})
 
             // now return the code test
             return next(handelSucess(res,"Sucessfully created the test",CreatedTest,200))
@@ -189,7 +189,7 @@ const CreateCodeTest = async(req,res,next)=>{
                 
                 const Student = StudentList.map(student => student._id);
 
-                const CreatedTest = await CodeTest.create({TestName,Branch,TestDescription,TestStartTime,TestExpireTime,AttemptTime,Questions,Faculty:token.faculty_id,StudentList:Student,TotalMarks})
+                const CreatedTest = await CodeTest.create({TestName,Branch,TestDescription,TestStartTime,TestExpireTime,AttemptTime,Questions,Faculty:token.faculty_id,StudentList:Student,TotalMarks,HideResult:Hide})
                 return next(handelSucess(res,"Sucessfully created the test",CreatedTest,200))    
             }
 
@@ -204,7 +204,7 @@ const CreateCodeTest = async(req,res,next)=>{
                 })
                 const Student = StudentList.map(student => student._id);
 
-                const CreatedTest = await CodeTest.create({TestName,Year,TestDescription,TestStartTime,TestExpireTime,AttemptTime,Questions,Faculty:token.faculty_id,StudentList:Student,TotalMarks})
+                const CreatedTest = await CodeTest.create({TestName,Year,TestDescription,TestStartTime,TestExpireTime,AttemptTime,Questions,Faculty:token.faculty_id,StudentList:Student,TotalMarks,HideResult:Hide})
                 return next(handelSucess(res,"Sucessfully created the test",CreatedTest,200))
                 }
                 
@@ -217,7 +217,7 @@ const CreateCodeTest = async(req,res,next)=>{
                 })
                 const Student = StudentList.map(student => student._id);
 
-                const CreatedTest = await CodeTest.create({TestName,Year,Branch,TestDescription,TestStartTime,TestExpireTime,AttemptTime,Questions,Faculty:token.faculty_id,StudentList:Student,TotalMarks})
+                const CreatedTest = await CodeTest.create({TestName,Year,Branch,TestDescription,TestStartTime,TestExpireTime,AttemptTime,Questions,Faculty:token.faculty_id,StudentList:Student,TotalMarks,HideResult:Hide})
                 return next(handelSucess(res,"Sucessfully created the test",CreatedTest,200))
             }
         }
@@ -252,9 +252,9 @@ const CreateMCQTest = async (req,res,next)=>{
     try{
         // take fculty and data from the uer 
         const {Faculty} = req.cookies
-        const {TestName,TestDescription,TestStartTime,TestExpireTime,AttemptTime,Questions,Branch,Year,Subject,TotalMarks} = req.body
+        const {TestName,TestDescription,TestStartTime,TestExpireTime,AttemptTime,Questions,Branch,Year,Subject,TotalMarks,Hide} = req.body
 
-        if(TestName && TestDescription && TestStartTime && TestExpireTime && AttemptTime && Questions && Subject && TotalMarks){
+        if(TestName && TestDescription && TestStartTime && TestExpireTime && AttemptTime && Questions && Subject && TotalMarks && Hide){
            // now get the token data 
            const token  =  await getTokenData(Faculty)
            // find all the student and addto the list who can attempt the test
@@ -262,7 +262,7 @@ const CreateMCQTest = async (req,res,next)=>{
            if(Year==="All" && Branch === "All" ){
                 const Student = StudentList.map(student => student._id);
               
-           const CreatedTest = await MCQtest.create({TestName,TestDescription,TestStartTime,TestExpireTime,AttemptTime,Questions,Faculty:token.faculty_id,StudentList:Student,Subject,TotalMarks})
+           const CreatedTest = await MCQtest.create({TestName,TestDescription,TestStartTime,TestExpireTime,AttemptTime,Questions,Faculty:token.faculty_id,StudentList:Student,Subject,TotalMarks,HideResult:Hide})
 
            // now return the code test
            return next(handelSucess(res,"Sucessfully created the test",CreatedTest,200))
@@ -279,7 +279,7 @@ const CreateMCQTest = async (req,res,next)=>{
                
                const Student = StudentList.map(student => student._id);
 
-               const CreatedTest = await MCQtest.create({TestName,Branch,TestDescription,TestStartTime,TestExpireTime,Subject,AttemptTime,Questions,Faculty:token.faculty_id,StudentList:Student,TotalMarks})
+               const CreatedTest = await MCQtest.create({TestName,Branch,TestDescription,TestStartTime,TestExpireTime,Subject,AttemptTime,Questions,Faculty:token.faculty_id,StudentList:Student,TotalMarks,HideResult:Hide})
                return next(handelSucess(res,"Sucessfully created the test",CreatedTest,200))    
            }
 
@@ -294,7 +294,7 @@ const CreateMCQTest = async (req,res,next)=>{
                })
                const Student = StudentList.map(student => student._id);
 
-               const CreatedTest = await MCQtest.create({TestName,Subject,Year,TestDescription,TestStartTime,TestExpireTime,AttemptTime,Questions,Faculty:token.faculty_id,StudentList:Student,TotalMarks})
+               const CreatedTest = await MCQtest.create({TestName,Subject,Year,TestDescription,TestStartTime,TestExpireTime,AttemptTime,Questions,Faculty:token.faculty_id,StudentList:Student,TotalMarks,HideResult:Hide})
                return next(handelSucess(res,"Sucessfully created the test",CreatedTest,200))
                }
                
@@ -307,7 +307,7 @@ const CreateMCQTest = async (req,res,next)=>{
                })
                const Student = StudentList.map(student => student._id);
 
-               const CreatedTest = await MCQtest.create({TestName,Subject,Year,Branch,TestDescription,TestStartTime,TestExpireTime,AttemptTime,Questions,Faculty:token.faculty_id,StudentList:Student,TotalMarks})
+               const CreatedTest = await MCQtest.create({TestName,Subject,Year,Branch,TestDescription,TestStartTime,TestExpireTime,AttemptTime,Questions,Faculty:token.faculty_id,StudentList:Student,TotalMarks,HideResult:Hide})
                return next(handelSucess(res,"Sucessfully created the test",CreatedTest,200))
            }
         }else{

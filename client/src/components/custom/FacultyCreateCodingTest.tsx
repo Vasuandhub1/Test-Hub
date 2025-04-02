@@ -24,7 +24,7 @@ import {
   SelectContent,
   SelectItem,
   SelectTrigger,
-  SelectValue,
+  SelectValue,   
 } from "@/components/ui/select"
 
 import axios from 'axios'
@@ -52,7 +52,7 @@ function FacultyCreateCodingTest() {
     TestName:string,
     TestDescription:string,
     AttemptDate:number,
-    
+    Hide:string,
     Branch:string,
     Year:string
    
@@ -66,7 +66,7 @@ function FacultyCreateCodingTest() {
   const [Data,Setdata] = useState<datainter>({TestName:"",
     TestDescription:"",
     AttemptDate:0,
-    
+    Hide:"false",
     Branch:"",
     Year:"" 
   }
@@ -80,7 +80,7 @@ function FacultyCreateCodingTest() {
       AttemptTime:Data.AttemptDate,
       TestExpireTime:Enddate,
       TestStartTime:Startdate,
-    
+      Hide:Data.Hide,
       Branch:Data.Branch,
       Year:Data.Year,
       Questions:[],
@@ -248,6 +248,21 @@ function FacultyCreateCodingTest() {
 </Select>
     </label>
   </CardContent>
+  <CardContent>
+  <label>
+    Hide Results from Students
+      <Select onValueChange={(value)=>Setdata({...Data,Hide:value})} >
+  <SelectTrigger className="w-[180px]">
+    <SelectValue placeholder="Hide" />
+  </SelectTrigger>
+  <SelectContent>
+    <SelectItem value="true">Yes</SelectItem>
+    <SelectItem value="false">No</SelectItem>
+  
+  </SelectContent>
+</Select>
+    </label>
+  </CardContent>
 
   <CardContent>
     <label htmlFor=""> Question for Test*
@@ -280,6 +295,7 @@ function FacultyCreateCodingTest() {
      <div className='flex justify-around gap-1'> <Button onClick={()=>SetPage(Page-1)}>Prev</Button> <Button onClick={()=>SetPage(Page+1)}>Next</Button></div>
     </Table>
   </CardContent>
+ 
   <CardFooter>
     <Button onClick={HandleSubmit}>Create Coding Test</Button>
   </CardFooter>
