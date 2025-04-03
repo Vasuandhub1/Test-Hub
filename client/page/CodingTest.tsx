@@ -45,8 +45,9 @@ function CodingTest() {
         toast({title:res?.data?.data?.message,description:res?.data?.data?.data})
         Dispatch(EndTest())
       }catch(err){
-        console.log(err)
+        console.log(err,"Submitte error")
         toast({title:err?.response?.data?.message , description:err?.response?.data?.data})
+        Dispatch(EndTest())
       }
     }
     console.log(Question,"Question")

@@ -367,7 +367,8 @@ const SubmitTest = async(req,res,next)=>{
             if(IsTest){
                 return next(handelSucess(res,"Test Saved Sucessful","sucess"))
             }else{
-                await CodeTestResult.create({TestId:TestToken._id,TotalMarksObtained:0,StudentId:StudentToken.student_id})
+                const Test = await CodeTest.findById(TestToken._id)
+                await CodeTestResult.create({TestId:TestToken._id,TotalMarksObtained:0,StudentId:StudentToken.student_id,TotalMarks:Test.TotalMarks})
                 return next(handelSucess(res,"Test Saved Sucessful ","Test Submitted with out any Submission"))
             }
         }
